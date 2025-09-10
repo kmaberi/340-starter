@@ -12,7 +12,9 @@ const app = express();
 /* ******************************************
  * Default GET route
  * ***************************************** */
-app.get("/", (req, res) => { res.send("Welcome home!"); });
+app.get("/", (req, res) => {
+  res.render("index");
+});
 
 /* ******************************************
  * Server host name and port

@@ -1,0 +1,94 @@
+<!-- filepath: c:\Users\MKENNETH\Documents\340-starter\views\index.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+  <% include ./partials/head %>
+  <body>
+    <% include ./partials/header %>
+
+    <main id="main" class="main-content" role="main">
+      <!-- Hero Section -->
+      <section class="hero" aria-labelledby="hero-heading">
+        <div class="hero-inner">
+          <div class="hero-copy">
+            <h1 id="hero-heading">Welcome to CSE Motors</h1>
+            <p class="lead">Discover quality vehicles and trusted service. Browse our inventory or book a test drive today.</p>
+            <p>
+              <a class="btn btn-primary" href="/inventory">Browse Inventory</a>
+              <a class="btn btn-secondary" href="/contact">Contact Sales</a>
+            </p>
+          </div>
+          <div class="hero-media" role="img" aria-label="Showcase cars">
+            <img src="/images/hero.jpg" alt="Showcase of cars at CSE Motors" />
+          </div>
+        </div>
+      </section>
+
+      <!-- Features Section -->
+      <section class="features" aria-labelledby="features-heading">
+        <h2 id="features-heading" class="sr-only">Why Choose Us</h2>
+        <ul class="features-list">
+          <li class="feature">
+            <h3>Certified Quality</h3>
+            <p>All vehicles are inspected and come with warranty options.</p>
+          </li>
+          <li class="feature">
+            <h3>Exceptional Service</h3>
+            <p>Friendly staff and fast financing approvals for your convenience.</p>
+          </li>
+          <li class="feature">
+            <h3>Easy Test Drives</h3>
+            <p>Schedule a test drive at your preferred time.</p>
+          </li>
+        </ul>
+      </section>
+
+      <!-- Featured Inventory -->
+      <section class="inventory" aria-labelledby="inventory-heading">
+        <h2 id="inventory-heading">Featured Inventory</h2>
+        <ul class="cards">
+          <li class="card">
+            <img src="/images/car1.jpg" alt="2020 Sedan - front view">
+            <div class="card-body">
+              <h3>2020 Sedan</h3>
+              <p class="price">$18,500</p>
+              <a class="card-btn" href="/inventory/2020-sedan">View details</a>
+            </div>
+          </li>
+          <li class="card">
+            <img src="/images/car2.jpg" alt="2019 SUV - side view">
+            <div class="card-body">
+              <h3>2019 SUV</h3>
+              <p class="price">$24,900</p>
+              <a class="card-btn" href="/inventory/2019-suv">View details</a>
+            </div>
+          </li>
+          <li class="card">
+            <img src="/images/car3.jpg" alt="2018 Hatchback - angled">
+            <div class="card-body">
+              <h3>2018 Hatchback</h3>
+              <p class="price">$12,300</p>
+              <a class="card-btn" href="/inventory/2018-hatch">View details</a>
+            </div>
+          </li>
+        </ul>
+      </section>
+    </main>
+
+    <% include ./partials/footer %>
+
+    <script>
+      // Mobile navigation toggle
+      (function() {
+        const btn = document.querySelector('.nav-toggle');
+        const nav = document.getElementById('main-nav');
+        if (btn && nav) {
+          btn.addEventListener('click', () => {
+            const expanded = btn.getAttribute('aria-expanded') === 'true';
+            btn.setAttribute('aria-expanded', !expanded);
+            nav.classList.toggle('open');
+          });
+        }
+      })();
+    </script>
+  </body>
+</html>
