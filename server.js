@@ -31,7 +31,7 @@ app.get("/", (req, res) => {
  * Server host name and port
  * ****************************************** */
 const HOST = "localhost";
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5500;
 
 /* ***********************
  * Log statement to confirm server operation

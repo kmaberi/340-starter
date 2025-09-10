@@ -1,4 +1,4 @@
-/******* Change Box Model ***************/
+/******* Global Styles ***************/
 *,
 *:before,
 *:after {
@@ -7,223 +7,171 @@
   padding: 0;
 }
 
-/******* Global Styles ***************/
 body {
   font-family: Arial, sans-serif;
   line-height: 1.6;
   color: #333;
   background-color: #f9f9f9;
+  padding: 1rem;
 }
 
-a {
-  text-decoration: none;
-  color: #007bff;
+h1, h2 {
+  color: #222;
 }
 
-a:hover {
-  text-decoration: underline;
-}
-
-/******* Header ***************/
-header {
-  background: #333;
-  color: #fff;
-  padding: 1rem 0;
-  text-align: center;
-}
-
-header h1 {
-  font-size: 2rem;
-}
-
-.nav-list {
-  display: flex;
-  justify-content: center;
+ul {
   list-style: none;
-  margin-top: 0.5rem;
+  padding: 0;
 }
 
-.nav-list li {
-  margin: 0 1rem;
-}
-
-.nav-link {
+button {
+  padding: 0.5rem 1rem;
+  background-color: #007bff;
   color: #fff;
-  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
-.nav-link:hover {
-  color: #007bff;
+button:hover {
+  background-color: #0056b3;
 }
 
 /******* Hero Section ***************/
 .hero {
-  background: url('/images/hero.jpg') no-repeat center center/cover;
-  color: #fff;
-  text-align: center;
-  padding: 4rem 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  background-color: #e9ecef;
+  padding: 2rem;
+  border-radius: 10px;
+  margin-bottom: 2rem;
 }
 
-.hero h1 {
-  font-size: 2.5rem;
+.herolabel {
+  flex: 1 1 100%;
+  text-align: center;
   margin-bottom: 1rem;
 }
 
-.hero p {
-  font-size: 1.2rem;
-  margin-bottom: 1.5rem;
+.herolabel h1 {
+  font-size: 2.5rem;
 }
 
-.hero .btn {
-  display: inline-block;
-  padding: 0.5rem 1rem;
-  border-radius: 5px;
-  font-size: 1rem;
-  margin: 0 0.5rem;
-}
-
-.btn-primary {
-  background: #007bff;
-  color: #fff;
-}
-
-.btn-primary:hover {
-  background: #0056b3;
-}
-
-.btn-secondary {
-  background: #6c757d;
-  color: #fff;
-}
-
-.btn-secondary:hover {
-  background: #5a6268;
-}
-
-/******* Features Section ***************/
-.features {
-  background: #fff;
-  padding: 2rem 1rem;
+picture {
+  flex: 1 1 300px;
   text-align: center;
 }
 
-.features h2 {
-  font-size: 2rem;
-  margin-bottom: 1.5rem;
-}
-
-.features-list {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  list-style: none;
-}
-
-.feature {
+.box {
   flex: 1 1 300px;
-  margin: 1rem;
-  padding: 1rem;
-  background: #f1f1f1;
-  border-radius: 5px;
+  background-color: #fff;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  text-align: center;
 }
 
-.feature h3 {
-  font-size: 1.5rem;
+.box h2 {
+  margin-bottom: 1rem;
+}
+
+.box ul {
+  margin-bottom: 1rem;
+}
+
+.box li {
   margin-bottom: 0.5rem;
 }
 
-/******* Inventory Section ***************/
-.inventory {
-  background: #f9f9f9;
-  padding: 2rem 1rem;
-}
-
-.inventory h2 {
-  text-align: center;
-  font-size: 2rem;
-  margin-bottom: 1.5rem;
-}
-
-.cards {
+/******* Large View Section ***************/
+.large-view {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  list-style: none;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.reviews {
+  flex: 1 1 300px;
+  background-color: #fff;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.reviews h2 {
+  margin-bottom: 1rem;
+}
+
+.reviews ul li {
+  margin-bottom: 0.5rem;
+}
+
+/******* Upgrades Section ***************/
+#upgrades {
+  flex: 2 1 600px;
+  background-color: #fff;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+#upgrades h2 {
+  margin-bottom: 1rem;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
 }
 
 .card {
-  flex: 1 1 300px;
-  margin: 1rem;
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  overflow: hidden;
+  text-align: center;
+  background-color: #f9f9f9;
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .card img {
-  width: 100%;
-  height: auto;
-}
-
-.card-body {
-  padding: 1rem;
-  text-align: center;
-}
-
-.card h3 {
-  font-size: 1.5rem;
+  max-width: 100%;
+  border-radius: 5px;
   margin-bottom: 0.5rem;
 }
 
-.card .price {
-  font-size: 1.2rem;
+.card a {
+  display: block;
   color: #007bff;
-  margin-bottom: 1rem;
+  text-decoration: none;
+  font-weight: bold;
 }
 
-.card-btn {
-  display: inline-block;
-  padding: 0.5rem 1rem;
-  background: #007bff;
-  color: #fff;
-  border-radius: 5px;
-}
-
-.card-btn:hover {
-  background: #0056b3;
-}
-
-/******* Footer ***************/
-.site-footer {
-  background: #333;
-  color: #fff;
-  text-align: center;
-  padding: 1rem 0;
-}
-
-.site-footer a {
-  color: #007bff;
-}
-
-.site-footer a:hover {
+.card a:hover {
   color: #0056b3;
 }
 
 /******* Responsive Design ***************/
 @media (min-width: 768px) {
-  .hero h1 {
-    font-size: 3rem;
+  .hero {
+    flex-wrap: nowrap;
   }
 
-  .hero p {
-    font-size: 1.5rem;
+  .herolabel {
+    flex: 1 1 auto;
   }
 
-  .features-list {
-    justify-content: space-between;
+  picture {
+    flex: 1 1 auto;
   }
 
-  .cards {
-    justify-content: space-between;
+  .box {
+    flex: 1 1 auto;
+  }
+
+  .large-view {
+    flex-wrap: nowrap;
   }
 }
