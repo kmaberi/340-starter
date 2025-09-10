@@ -1,79 +1,51 @@
-<!-- filepath: c:\Users\MKENNETH\Documents\340-starter\views\index.ejs -->
-<!DOCTYPE html>
-<html lang="en">
-  <% include ./partials/head %>
-  <body>
-    <% include ./partials/header %>
-
-    <main id="main" class="main-content" role="main">
-      <!-- Hero Section -->
-      <section class="hero" aria-labelledby="hero-heading">
-        <div class="hero-inner">
-          <div class="hero-copy">
-            <h1 id="hero-heading">Welcome to CSE Motors</h1>
-            <p class="lead">Discover quality vehicles and trusted service. Browse our inventory or book a test drive today.</p>
-            <p>
-              <a class="btn btn-primary" href="/inventory">Browse Inventory</a>
-              <a class="btn btn-secondary" href="/contact">Contact Sales</a>
-            </p>
-          </div>
-          <div class="hero-media" role="img" aria-label="Showcase cars">
-            <img src="public\images\vehicles\camaro.jpg" alt="Showcase of cars at CSE Motors" />
-          </div>
-        </div>
-      </section>
-
-      <!-- Features Section -->
-      <section class="features" aria-labelledby="features-heading">
-        <h2 id="features-heading" class="sr-only">Why Choose Us</h2>
-        <ul class="features-list">
-          <li class="feature">
-            <h3>Certified Quality</h3>
-            <p>All vehicles are inspected and come with warranty options.</p>
-          </li>
-          <li class="feature">
-            <h3>Exceptional Service</h3>
-            <p>Friendly staff and fast financing approvals for your convenience.</p>
-          </li>
-          <li class="feature">
-            <h3>Easy Test Drives</h3>
-            <p>Schedule a test drive at your preferred time.</p>
-          </li>
-        </ul>
-      </section>
-
-      <!-- Featured Inventory -->
-      <section class="inventory" aria-labelledby="inventory-heading">
-        <h2 id="inventory-heading">Featured Inventory</h2>
-        <ul class="cards">
-          <li class="card">
-            <img src="public\images\vehicles\camaro.jpg" alt="2020 camaro - front view">
-            <div class="card-body">
-              <h3>2020 Sedan</h3>
-              <p class="price">$18,500</p>
-              <a class="card-btn" href="/inventory/2020-sedan">View details</a>
-            </div>
-          </li>
-          <li class="card">
-            <img src="public\images\vehicles\survan.jpg" alt="2019 survan - side view">
-            <div class="card-body">
-              <h3>2019 SUV</h3>
-              <p class="price">$24,900</p>
-              <a class="card-btn" href="/inventory/2019-suv">View details</a>
-            </div>
-          </li>
-          <li class="card">
-            <img src="public\images\vehicles\dog-car-tn.jpg" alt="2018 dog-car-tn">
-            <div class="card-body">
-              <h3>2018 Hatchback</h3>
-              <p class="price">$12,300</p>
-              <a class="card-btn" href="/inventory/2018-hatch">View details</a>
-            </div>
-          </li>
-        </ul>
-      </section>
-    </main>
-
-    <% include ./partials/footer %>
-  </body>
-</html>
+<div class="hero">
+  <div class="herolabel">
+    <h1>Welcome to CSE Motors!</h1>
+  </div>
+  <picture>
+    <source srcset="/images/vehicles/delorean-tn.jpg" media="(max-width:500px)">
+    <img src="/images/vehicles/delorean.jpg" width="400" alt="pic of a delorean vehicle">
+  </picture>
+  <div class="box">
+    <h2>DMC Delorean</h2>
+    <ul>
+      <li>3 Cup holders</li>
+      <li>Superman doors</li>
+      <li>Fuzzy dice!</li>
+    </ul>
+    <button>Own Today</button>
+  </div>
+</div>
+<div class="large-view">
+  <div class="reviews">
+    <h2>DMC Delorean Reviews</h2>
+    <ul>
+      <li>"So fast it's almost like traveling in time." (4/5)</li>
+      <li>"coolest ride on the road." (4/5)</li>
+      <li>"I'm feeling McFly!" (5/5)</li>
+      <li>"The most futuristic ride of our day." (4.5/5)</li>
+      <li>"80's livin and I love it!" (5/5)</li>
+    </ul>
+  </div>
+  <div id="upgrades">
+    <h2>Delorean Upgrades</h2>
+    <div class="card-grid">
+      <div class="card">
+        <img src="/images/upgrades/flux-cap.png" alt="pic of a flux capacitor">
+        <a href="linkPageHere">Flux Capacitor</a>
+      </div>
+      <div class="card">
+        <img src="/images/upgrades/flame.jpg" alt="pic of a flux capacitor">
+        <a href="linkPageHere">Flame Decals</a>
+      </div>
+      <div class="card">
+        <img src="/images/upgrades/bumper_sticker.jpg" alt="pic of a bumper sticker that says hello world">
+        <a href="linkPageHere">Bumper Stickers</a>
+      </div>
+      <div class="card">
+        <img src="/images/upgrades/hub-cap.jpg" alt="pic of a hub cap">
+        <a href="linkPageHere">Hub Caps</a>
+      </div>
+    </div>
+  </div>
+</div>
