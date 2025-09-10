@@ -3,4 +3,227 @@
 *:before,
 *:after {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/******* Global Styles ***************/
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  color: #333;
+  background-color: #f9f9f9;
+}
+
+a {
+  text-decoration: none;
+  color: #007bff;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/******* Header ***************/
+header {
+  background: #333;
+  color: #fff;
+  padding: 1rem 0;
+  text-align: center;
+}
+
+header h1 {
+  font-size: 2rem;
+}
+
+.nav-list {
+  display: flex;
+  justify-content: center;
+  list-style: none;
+  margin-top: 0.5rem;
+}
+
+.nav-list li {
+  margin: 0 1rem;
+}
+
+.nav-link {
+  color: #fff;
+  font-weight: bold;
+}
+
+.nav-link:hover {
+  color: #007bff;
+}
+
+/******* Hero Section ***************/
+.hero {
+  background: url('/images/hero.jpg') no-repeat center center/cover;
+  color: #fff;
+  text-align: center;
+  padding: 4rem 1rem;
+}
+
+.hero h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.hero p {
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.hero .btn {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  font-size: 1rem;
+  margin: 0 0.5rem;
+}
+
+.btn-primary {
+  background: #007bff;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: #0056b3;
+}
+
+.btn-secondary {
+  background: #6c757d;
+  color: #fff;
+}
+
+.btn-secondary:hover {
+  background: #5a6268;
+}
+
+/******* Features Section ***************/
+.features {
+  background: #fff;
+  padding: 2rem 1rem;
+  text-align: center;
+}
+
+.features h2 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.features-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  list-style: none;
+}
+
+.feature {
+  flex: 1 1 300px;
+  margin: 1rem;
+  padding: 1rem;
+  background: #f1f1f1;
+  border-radius: 5px;
+}
+
+.feature h3 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+/******* Inventory Section ***************/
+.inventory {
+  background: #f9f9f9;
+  padding: 2rem 1rem;
+}
+
+.inventory h2 {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  list-style: none;
+}
+
+.card {
+  flex: 1 1 300px;
+  margin: 1rem;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.card img {
+  width: 100%;
+  height: auto;
+}
+
+.card-body {
+  padding: 1rem;
+  text-align: center;
+}
+
+.card h3 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.card .price {
+  font-size: 1.2rem;
+  color: #007bff;
+  margin-bottom: 1rem;
+}
+
+.card-btn {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background: #007bff;
+  color: #fff;
+  border-radius: 5px;
+}
+
+.card-btn:hover {
+  background: #0056b3;
+}
+
+/******* Footer ***************/
+.site-footer {
+  background: #333;
+  color: #fff;
+  text-align: center;
+  padding: 1rem 0;
+}
+
+.site-footer a {
+  color: #007bff;
+}
+
+.site-footer a:hover {
+  color: #0056b3;
+}
+
+/******* Responsive Design ***************/
+@media (min-width: 768px) {
+  .hero h1 {
+    font-size: 3rem;
+  }
+
+  .hero p {
+    font-size: 1.5rem;
+  }
+
+  .features-list {
+    justify-content: space-between;
+  }
+
+  .cards {
+    justify-content: space-between;
+  }
 }

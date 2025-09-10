@@ -18,7 +18,7 @@
             </p>
           </div>
           <div class="hero-media" role="img" aria-label="Showcase cars">
-            <img src="/images/hero.jpg" alt="Showcase of cars at CSE Motors" />
+            <img src="public\images\vehicles\camaro.jpg" alt="Showcase of cars at CSE Motors" />
           </div>
         </div>
       </section>
@@ -47,7 +47,7 @@
         <h2 id="inventory-heading">Featured Inventory</h2>
         <ul class="cards">
           <li class="card">
-            <img src="/images/car1.jpg" alt="2020 Sedan - front view">
+            <img src="public\images\vehicles\camaro.jpg" alt="2020 camaro - front view">
             <div class="card-body">
               <h3>2020 Sedan</h3>
               <p class="price">$18,500</p>
@@ -55,7 +55,7 @@
             </div>
           </li>
           <li class="card">
-            <img src="/images/car2.jpg" alt="2019 SUV - side view">
+            <img src="public\images\vehicles\survan.jpg" alt="2019 survan - side view">
             <div class="card-body">
               <h3>2019 SUV</h3>
               <p class="price">$24,900</p>
@@ -63,7 +63,7 @@
             </div>
           </li>
           <li class="card">
-            <img src="/images/car3.jpg" alt="2018 Hatchback - angled">
+            <img src="public\images\vehicles\dog-car-tn.jpg" alt="2018 dog-car-tn">
             <div class="card-body">
               <h3>2018 Hatchback</h3>
               <p class="price">$12,300</p>
@@ -75,20 +75,5 @@
     </main>
 
     <% include ./partials/footer %>
-
-    <script>
-      // Mobile navigation toggle
-      (function() {
-        const btn = document.querySelector('.nav-toggle');
-        const nav = document.getElementById('main-nav');
-        if (btn && nav) {
-          btn.addEventListener('click', () => {
-            const expanded = btn.getAttribute('aria-expanded') === 'true';
-            btn.setAttribute('aria-expanded', !expanded);
-            nav.classList.toggle('open');
-          });
-        }
-      })();
-    </script>
   </body>
 </html>
