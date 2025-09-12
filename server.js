@@ -1,41 +1,71 @@
+// server.js
 /* ******************************************
- * This is the application server
+ * Application server - Express + EJS + Layouts
  * ******************************************/
-/* Bring Express into scope and create the app */
-const express = require("express");
-const expressLayouts = require("express-ejs-layouts");
-require("dotenv").config();
+const path = require('path');
+const express = require('express');
+const expressLayouts = require('express-ejs-layouts');
+const portfinder = require("portfinder");
+require('dotenv').config();
 
 const app = express();
 
-// Set the views directory
-app.set("views", "./views");
+/* ---------- Body parsers ---------- */
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
-// Set the view engine to EJS
-app.set("view engine", "ejs");
+/* ---------- Views / Templating ---------- */
+// explicit absolute views path (robust for dev + deploy)
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
 
-// Use express-ejs-layouts
+// express-ejs-layouts (register once)
 app.use(expressLayouts);
 
-// Static files middleware
-app.use(express.static("public"));
+// Default layout name (expects views/layouts/layout.ejs)
+app.set('layout', 'layouts/layout');
 
+/* ---------- Static assets ---------- */
+app.use(express.static(path.join(__dirname, 'public')));
+
+/* ---------- Small debug info ---------- */
+console.log('Views directory:', app.get('views'));
+console.log('Views directory:', app.get('views'));
+console.log('Layout setting:', app.get('layout') + '.ejs');
 /* ******************************************
- * Default GET route
- * ***************************************** */
-app.get("/", (req, res) => {
-  res.render("index");
+ * Routes
+ * ****************************************** */
+
+// Home (renders views/index.ejs into views/layout.ejs)
+app.get('/', (req, res) => {
+  res.render('index', { title: 'CSE Motors' });
+});
+
+// Example of another route
+app.get('/about', (req, res) => {
+  res.render('about', { title: 'About CSE Motors' }); // create views/about.ejs if used
+});
+
+/* 404 handler */
+app.use((req, res) => {
+  res.status(index);
+  // If you have a 404.ejs, render it; otherwise send a simple message
+  if (res.render) {
+    return res.render('404', { title: 'Not Found' }); // optional: create views/404.ejs
+  }
+  res.send('404 - Not Found');
 });
 
 /* ******************************************
- * Server host name and port
+ * Start server
  * ****************************************** */
-const HOST = "localhost";
-const PORT = process.env.PORT || 5500;
-
-/* ***********************
- * Log statement to confirm server operation
- * *********************** */
-app.listen(PORT, () => {
-  console.log(`Server running on http://${HOST}:${PORT}`);
+const PORT = process.env.PORT || 5501;
+portfinder.getPort((err, port) => {
+  if (err) {
+    console.error(err);
+    process.exit(1);
+  }
+  app.listen(port, () => {
+    console.log(`Server running on http://localhost:${port}`);
+  });
 });
