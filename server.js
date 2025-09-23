@@ -6,6 +6,7 @@ const path = require('path');
 const express = require('express');
 const expressLayouts = require('express-ejs-layouts');
 const portfinder = require("portfinder");
+const baseController = require("./controllers/baseController")
 require('dotenv').config();
 
 const app = express();
@@ -55,11 +56,13 @@ app.use((req, res) => {
   }
   res.send('404 - Not Found');
 });
+// Index route
+app.get('/', baseController.buildHome);
 
 /* ******************************************
  * Start server
  * ****************************************** */
-const PORT = process.env.PORT || 5501;
+const PORT = process.env.PORT || 5500;
 portfinder.getPort((err, port) => {
   if (err) {
     console.error(err);
