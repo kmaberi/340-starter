@@ -81,5 +81,5 @@ WHERE inv_id = (
 
 -- Image path update to include /vehicles/
 UPDATE public.inventory
-SET inv_image = REPLACE(inv_image, '/images/', '/images/vehicles/'),
-    inv_thumbnail = REPLACE(inv_thumbnail, '/images/', '/images/vehicles/');
+SET inv_image = REPLACE(inv_image, '/images/', '/images/vehicles/dog-car.jpg'),
+    inv_thumbnail = REPLACE(inv_thumbnail, '/images/', '/images/vehicles/adventador.jpg');
