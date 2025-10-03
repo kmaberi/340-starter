@@ -1,0 +1,8 @@
+<main class="container error-page">
+  <h1><%= title %></h1>
+  <p><%= message %></p>
+  <% if (error.stack) { %>
+    <pre><%= error.stack %></pre>
+  <% } %>
+  <a href="/" class="btn">Return Home</a>
+</main>
