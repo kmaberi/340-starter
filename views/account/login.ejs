@@ -1,0 +1,46 @@
+<% if (locals.errors) { %>
+  <ul class="notice">
+    <% errors.array().forEach(error => { %>
+      <li><%= error.msg %></li>
+    <% }) %>
+  </ul>
+<% } %>
+<% if (flash.notice) { %>
+  <p class="notice"><%= flash.notice %></p>
+<% } %>
+
+<form id="loginForm" action="/account/login" method="post" class="account-form">
+  <fieldset>
+    <legend>Account Login</legend>
+    <label for="account_email">Email:</label>
+    <input type="email" id="account_email" name="account_email" required 
+           value="<%= locals.account_email ? account_email : '' %>"
+           placeholder="Enter your email">
+    
+    <label for="account_password">Password:</label>
+    <input type="password" id="account_password" name="account_password" required
+           placeholder="Enter your password">
+    
+    <input type="submit" value="Sign In" class="submit-btn">
+  </fieldset>
+</form>
+
+<p>Not registered? <a href="/account/register">Sign-up</a></p>
+
+<script>
+// Client-side validation
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+  const email = document.getElementById('account_email').value;
+  const password = document.getElementById('account_password').value;
+  
+  if (!email || !password) {
+    e.preventDefault();
+    alert('Please fill in all fields');
+  }
+  
+  if (email && !email.includes('@')) {
+    e.preventDefault();
+    alert('Please enter a valid email address');
+  }
+});
+</script>

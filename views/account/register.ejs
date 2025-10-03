@@ -1,0 +1,92 @@
+<% if (locals.errors) { %>
+  <ul class="notice">
+    <% errors.array().forEach(error => { %>
+      <li><%= error.msg %></li>
+    <% }) %>
+  </ul>
+<% } %>
+<% if (flash.notice) { %>
+  <p class="notice"><%= flash.notice %></p>
+<% } %>
+
+<form id="registrationForm" action="/account/register" method="post" class="account-form">
+  <fieldset>
+    <legend>Account Registration</legend>
+    <label for="account_firstname">First Name:</label>
+    <input type="text" id="account_firstname" name="account_firstname" required 
+           value="<%= locals.account_firstname ? account_firstname : '' %>"
+           placeholder="Enter your first name">
+    
+    <label for="account_lastname">Last Name:</label>
+    <input type="text" id="account_lastname" name="account_lastname" required 
+           value="<%= locals.account_lastname ? account_lastname : '' %>"
+           placeholder="Enter your last name">
+    
+    <label for="account_email">Email:</label>
+    <input type="email" id="account_email" name="account_email" required 
+           value="<%= locals.account_email ? account_email : '' %>"
+           placeholder="Enter your email">
+    
+    <label for="account_password">Password:</label>
+    <input type="password" id="account_password" name="account_password" required 
+           pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$"
+           placeholder="Enter your password">
+    <p class="password-info">Password must be at least 12 characters and contain 1 uppercase, 1 lowercase, 1 number and 1 special character</p>
+    
+    <label for="confirm_password">Confirm Password:</label>
+    <input type="password" id="confirm_password" name="confirm_password" required 
+           placeholder="Confirm your password">
+    
+    <input type="submit" value="Register" class="submit-btn">
+  </fieldset>
+</form>
+
+<p>Already registered? <a href="/account/login">Sign-in</a></p>
+
+<script>
+// Client-side validation
+document.getElementById('registrationForm').addEventListener('submit', function(e) {
+  const firstName = document.getElementById('account_firstname').value;
+  const lastName = document.getElementById('account_lastname').value;
+  const email = document.getElementById('account_email').value;
+  const password = document.getElementById('account_password').value;
+  const confirmPassword = document.getElementById('confirm_password').value;
+  
+  if (!firstName || !lastName || !email || !password || !confirmPassword) {
+    e.preventDefault();
+    alert('Please fill in all fields');
+    return;
+  }
+  
+  if (email && !email.includes('@')) {
+    e.preventDefault();
+    alert('Please enter a valid email address');
+    return;
+  }
+  
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$/;
+  if (password && !passwordRegex.test(password)) {
+    e.preventDefault();
+    alert('Password must be at least 12 characters and contain 1 uppercase, 1 lowercase, 1 number and 1 special character');
+    return;
+  }
+  
+  if (password !== confirmPassword) {
+    e.preventDefault();
+    alert('Passwords do not match');
+    return;
+  }
+});
+
+// Real-time password confirmation check
+document.getElementById('confirm_password').addEventListener('input', function() {
+  const password = document.getElementById('account_password').value;
+  const confirmPassword = this.value;
+  
+  if (confirmPassword && password !== confirmPassword) {
+    this.style.borderColor = '#ef4444';
+  } else {
+    this.style.borderColor = '#10b981';
+  }
+});
+</script>

@@ -1,0 +1,25 @@
+<!-- filepath: views/inventory/management.ejs -->
+<!-- <!DOCTYPE html> -->
+<!-- <html lang="en"> -->
+<!-- <head> -->
+  <!-- <title>Inventory Management</title> -->
+<!-- </head> -->
+<!-- <body> -->
+  <main>
+    <div class="form-container">
+      <% if (message && message.length > 0) { %>
+        <div class="flash-message"><%= message %></div>
+      <% } %>
+      <h1>Inventory Management</h1>
+      <ul style="list-style: none; padding: 0; margin-top: 2em;">
+        <li style="margin-bottom: 1em;">
+          <a href="/inv/add-classification" class="management-link">Add New Classification</a>
+        </li>
+        <li>
+          <a href="/inv/add-inventory" class="management-link">Add New Vehicle</a>
+        </li>
+      </ul>
+    </div>
+  </main>
+<!-- </body> -->
+<!-- </html> -->

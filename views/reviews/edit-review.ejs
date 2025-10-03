@@ -1,0 +1,173 @@
+<!-- filepath: /home/kasule/Documents/Spring Semester 2025/CSE 340 Web Backend Development/CSE-340-starter/views/reviews/edit-review.ejs -->
+<% if (title) { %>
+  <h1><%= title %></h1>
+<% } else { 
+  res.redirect('/')
+} %>
+
+<% if (flash.notice) { %>
+  <p class="notice"><%= flash.notice %></p>
+<% } %>
+
+<% if (errors) { %>
+  <ul class="notice">
+    <% errors.array().forEach(error => { %>
+      <li><%= error.msg %></li>
+    <% }) %>
+  </ul>
+<% } %>
+
+<div class="review-form-container">
+  <h2>Edit Your Review</h2>
+  
+  <div class="vehicle-info">
+    <h3><%= vehicle.inv_make %> <%= vehicle.inv_model %></h3>
+    <p><%= vehicle.inv_year %> • <%= vehicle.inv_color %></p>
+  </div>
+
+  <form action="/review/edit" method="post" class="review-form">
+    <input type="hidden" name="review_id" value="<%= review.review_id %>">
+    <input type="hidden" name="inv_id" value="<%= vehicle.inv_id %>">
+    
+    <label for="review_title">Review Title:</label>
+    <input type="text" id="review_title" name="review_title" maxlength="100" required
+           value="<%= locals.review_title || review.review_title %>"
+           placeholder="Brief summary of your experience">
+    
+    <label for="review_rating">Rating:</label>
+    <select id="review_rating" name="review_rating" required>
+      <option value="">Select a rating</option>
+      <option value="5" <%= (locals.review_rating || review.review_rating) == 5 ? 'selected' : '' %>>⭐⭐⭐⭐⭐ Excellent</option>
+      <option value="4" <%= (locals.review_rating || review.review_rating) == 4 ? 'selected' : '' %>>⭐⭐⭐⭐ Very Good</option>
+      <option value="3" <%= (locals.review_rating || review.review_rating) == 3 ? 'selected' : '' %>>⭐⭐⭐ Good</option>
+      <option value="2" <%= (locals.review_rating || review.review_rating) == 2 ? 'selected' : '' %>>⭐⭐ Fair</option>
+      <option value="1" <%= (locals.review_rating || review.review_rating) == 1 ? 'selected' : '' %>>⭐ Poor</option>
+    </select>
+    
+    <label for="review_text">Your Review:</label>
+    <textarea id="review_text" name="review_text" rows="6" maxlength="1000" required
+              placeholder="Tell others about your experience with this vehicle..."><%= locals.review_text || review.review_text %></textarea>
+    <div class="char-count">
+      <span id="charCount">0</span>/1000 characters
+    </div>
+    
+    <div class="form-buttons">
+      <button type="submit" class="btn btn-primary">Update Review</button>
+      <a href="/review/my-reviews" class="btn btn-secondary">Cancel</a>
+    </div>
+  </form>
+</div>
+
+<script>
+  // Character counter for review text
+  const textarea = document.getElementById('review_text');
+  const charCount = document.getElementById('charCount');
+  
+  function updateCharCount() {
+    charCount.textContent = textarea.value.length;
+  }
+  
+  textarea.addEventListener('input', updateCharCount);
+  updateCharCount(); // Initialize count
+</script>
+
+<style>
+.review-form-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.vehicle-info {
+  background: #fff;
+  padding: 15px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  border-left: 4px solid #4a90e2;
+}
+
+.vehicle-info h3 {
+  margin: 0 0 5px 0;
+  color: #333;
+}
+
+.vehicle-info p {
+  margin: 0;
+  color: #666;
+}
+
+.review-form {
+  background: #fff;
+  padding: 20px;
+  border-radius: 6px;
+}
+
+.review-form label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #333;
+}
+
+.review-form input,
+.review-form select,
+.review-form textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-family: inherit;
+}
+
+.review-form textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.char-count {
+  text-align: right;
+  margin-top: -10px;
+  margin-bottom: 15px;
+  color: #666;
+  font-size: 0.9em;
+}
+
+.form-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.btn-primary {
+  background: #4a90e2;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #357abd;
+}
+
+.btn-secondary {
+  background: #6c757d;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background: #545b62;
+}
+</style>
