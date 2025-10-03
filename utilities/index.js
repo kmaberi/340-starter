@@ -1,5 +1,5 @@
 const invModel = require("../models/inventory-model")
-console.log(data)
+
 const Util = {}
 
 /* ************************
