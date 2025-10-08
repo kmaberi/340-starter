@@ -55,19 +55,23 @@ app.set("layout", "layouts/layout"); // Remove the "./" prefix
 /* ***********************
  * Load classifications for header (or navigation)
  *************************/
+
+// Middleware to set navigation HTML for all views
+// Removed duplicate require of utilities
 app.use(async (req, res, next) => {
   try {
     const classifications = await classificationModel.getClassifications();
-    res.locals.classifications = classifications; // classifications is already an array
+    res.locals.classifications = classifications;
     res.locals.active = '';
-    // Make flash messages available to all views
     res.locals.flash = req.flash();
+    res.locals.nav = await utilities.getNav();
     next();
   } catch (err) {
     console.error("Error loading classifications:", err);
-    res.locals.classifications = []; // Set empty array on error
+    res.locals.classifications = [];
     res.locals.active = '';
     res.locals.flash = req.flash();
+    res.locals.nav = '<ul><li><a href="/">Home</a></li></ul>';
     next();
   }
 });
