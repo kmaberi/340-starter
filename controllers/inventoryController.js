@@ -16,7 +16,7 @@ exports.buildDetailView = async (req, res, next) => {
     next(err);
   }
 };
-const inventoryModel = require('../models/inventoryModel'); // must provide insert functions
+const inventoryModel = require('../models/inventory-model'); // must provide insert functions
 const utilities = require('../utilities');
 const validator = require('validator');
 
