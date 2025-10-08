@@ -1,0 +1,20 @@
+<%- include('./partials/head') %>
+
+<body>
+  <%- include('./partials/header') %>
+
+  <main class="container">
+    <div class="error-container">
+      <h1 class="error-code"><%= error.status || 500 %></h1>
+      <p class="error-message"><%= error.message || 'An unexpected error occurred' %></p>
+      
+      <div class="error-actions">
+        <a href="/" class="btn btn-primary">Return Home</a>
+        <a href="javascript:history.back()" class="btn btn-secondary">Go Back</a>
+      </div>
+    </div>
+  </main>
+
+  <%- include('./partials/footer') %>
+</body>
+</html>

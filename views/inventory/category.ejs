@@ -1,0 +1,185 @@
+<%- include('../partials/head') %>
+
+<div class="container">
+  <!-- Category Header Section -->
+  <header class="category-header">
+    <div class="category-intro">
+      <h1 class="category-title"><%= title %></h1>
+      <p class="category-description">
+        Discover our selection of premium <%= title.toLowerCase() %>. 
+        Each vehicle is thoroughly inspected and comes with our quality guarantee.
+      </p>
+    </div>
+    
+    <!-- Filter and Sort Controls -->
+    <div class="category-controls">
+      <div class="search-filter">
+        <input type="text" id="vehicleSearch" placeholder="Search vehicles..." 
+               class="search-input" onkeyup="filterVehicles(this.value)">
+      </div>
+      
+      <div class="sort-controls">
+        <select id="sortOrder" onchange="sortVehicles(this.value)" class="sort-select">
+          <option value="price-asc">Price: Low to High</option>
+          <option value="price-desc">Price: High to Low</option>
+          <option value="year-desc">Newest First</option>
+          <option value="year-asc">Oldest First</option>
+          <option value="miles-asc">Lowest Mileage</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <!-- Messages Section -->
+  <% if (locals.message) { %>
+    <div class="message message-info fade-in">
+      <span class="message-icon">ℹ️</span>
+      <div class="message-content">
+        <h3 class="message-title">Information</h3>
+        <p><%= message %></p>
+      </div>
+    </div>
+  <% } %>
+
+  <!-- Vehicles Grid Section -->
+  <div class="vehicles-section">
+    <% if (vehicles && vehicles.length > 0) { %>
+      <div class="vehicle-grid fade-in">
+        <% vehicles.forEach(vehicle => { %>
+          <div class="vehicle-card" data-price="<%= vehicle.inv_price %>" 
+               data-year="<%= vehicle.inv_year %>" data-miles="<%= vehicle.inv_miles %>"
+               data-search="<%= vehicle.inv_make %> <%= vehicle.inv_model %> <%= vehicle.inv_year %>">
+            <!-- Vehicle Image -->
+            <div class="vehicle-image">
+              <img src="<%= vehicle.inv_image %>" 
+                   alt="<%= vehicle.inv_make %> <%= vehicle.inv_model %>"
+                   loading="lazy">
+              <div class="vehicle-badges">
+                <% if (vehicle.inv_miles < 50000) { %>
+                  <span class="badge badge-low-miles">Low Miles</span>
+                <% } %>
+                <% if (new Date().getFullYear() - vehicle.inv_year <= 3) { %>
+                  <span class="badge badge-recent">Recent Model</span>
+                <% } %>
+              </div>
+            </div>
+
+            <!-- Vehicle Info -->
+            <div class="vehicle-info">
+              <h2 class="vehicle-title">
+                <%= vehicle.inv_year %> <%= vehicle.inv_make %> <%= vehicle.inv_model %>
+              </h2>
+              
+              <div class="vehicle-specs">
+                <div class="spec-item">
+                  <span class="spec-icon">🚗</span>
+                  <span class="spec-value"><%= vehicle.inv_miles.toLocaleString() %> miles</span>
+                </div>
+                <div class="spec-item">
+                  <span class="spec-icon">📅</span>
+                  <span class="spec-value"><%= vehicle.inv_year %></span>
+                </div>
+              </div>
+
+              <div class="vehicle-price-section">
+                <p class="vehicle-price">$<%= vehicle.inv_price.toLocaleString() %></p>
+                <% if (vehicle.inv_price > 50000) { %>
+                  <span class="finance-note">Financing Available</span>
+                <% } %>
+              </div>
+
+              <!-- Quick Actions -->
+              <div class="vehicle-actions">
+                <a href="/inv/detail/<%= vehicle.inv_id %>" class="btn btn-primary">View Details</a>
+                <button onclick="addToCompare('<%= vehicle.inv_id %>')" 
+                        class="btn btn-secondary compare-btn">
+                  Compare
+                </button>
+              </div>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+
+      <!-- Comparison Tooltip -->
+      <div id="compareTooltip" class="compare-tooltip">
+        <span id="compareCount">0</span> vehicles selected
+        <button onclick="viewComparison()" class="btn btn-sm">Compare Now</button>
+      </div>
+
+    <% } else if (!locals.message) { %>
+      <!-- Loading State -->
+      <div class="loading-state">
+        <div class="loading-spinner"></div>
+        <p>Finding the perfect vehicles for you...</p>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<!-- Filtering and Sorting Scripts -->
+<script>
+function filterVehicles(query) {
+  query = query.toLowerCase();
+  document.querySelectorAll('.vehicle-card').forEach(card => {
+    const searchText = card.dataset.search.toLowerCase();
+    card.style.display = searchText.includes(query) ? 'block' : 'none';
+  });
+}
+
+function sortVehicles(criterion) {
+  const container = document.querySelector('.vehicle-grid');
+  const cards = Array.from(container.children);
+
+  cards.sort((a, b) => {
+    const [type, direction] = criterion.split('-');
+    const valueA = parseFloat(a.dataset[type]);
+    const valueB = parseFloat(b.dataset[type]);
+    
+    return direction === 'asc' ? valueA - valueB : valueB - valueA;
+  });
+
+  container.innerHTML = '';
+  cards.forEach(card => container.appendChild(card));
+}
+
+// Vehicle Comparison System
+let compareList = [];
+
+function addToCompare(vehicleId) {
+  const index = compareList.indexOf(vehicleId);
+  if (index > -1) {
+    compareList.splice(index, 1);
+  } else if (compareList.length < 3) {
+    compareList.push(vehicleId);
+  } else {
+    alert('You can compare up to 3 vehicles at a time');
+    return;
+  }
+
+  updateCompareUI();
+}
+
+function updateCompareUI() {
+  const tooltip = document.getElementById('compareTooltip');
+  const count = document.getElementById('compareCount');
+  
+  count.textContent = compareList.length;
+  tooltip.classList.toggle('visible', compareList.length > 0);
+  
+  document.querySelectorAll('.compare-btn').forEach(btn => {
+    const vehicleId = btn.onclick.toString().match(/'([^']+)'/)[1];
+    btn.classList.toggle('active', compareList.includes(vehicleId));
+  });
+}
+
+function viewComparison() {
+  if (compareList.length > 1) {
+    window.location.href = '/inv/compare/' + compareList.join(',');
+  } else {
+    alert('Please select at least 2 vehicles to compare');
+  }
+}
+</script>
+
+<%- include('../partials/footer') %>

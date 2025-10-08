@@ -43,30 +43,44 @@ function renderVehicleDetailHTML(v) {
  ************************** */
 // inside utilities/index.js
 
-async function getNav(){
+async function getNav(navPath = "/"){
   try {
-    let data = await classificationModel.getClassifications();
-    let list = "<ul>";
-    list += '<li><a href="/" title="Home page">Home</a></li>';
-    if (data && Array.isArray(data)) {
-      data.forEach((row) => {
-        list += "<li>";
-        list +=
-          '<a href="/inv/type/' +
-          row.classification_id +
-          '" title="See our inventory of ' +
-          row.classification_name +
-          ' vehicles">' +
-          row.classification_name +
-          "</a>";
-        list += "</li>";
-      });
-    }
-    list += "</ul>";
-    return list;
+    const data = await classificationModel.getClassifications()
+    let list = '<nav class="site-nav" aria-label="Vehicle Categories"><ul class="nav-list">'
+    list += '<li><a href="/" class="nav-link' + 
+      (navPath === "/" ? ' active' : '') + 
+      '">Home</a></li>'
+    
+    // Create a Set to store unique classification names
+    const seenClassifications = new Set()
+    
+    data.forEach(row => {
+      // Only add the classification if we haven't seen it before
+      if (!seenClassifications.has(row.classification_name)) {
+        seenClassifications.add(row.classification_name)
+        list += '<li><a href="/inv/type/' + 
+          row.classification_id + 
+          '" class="nav-link' +
+          (navPath === "/inv/type/" + row.classification_id ? ' active' : '') + 
+          '">' + 
+          row.classification_name + 
+          '</a></li>'
+      }
+    })
+    
+    // Add additional main navigation items
+    list += '<li><a href="/about" class="nav-link' + 
+      (navPath === "/about" ? ' active' : '') + 
+      '">About</a></li>'
+    list += '<li><a href="/contact" class="nav-link' + 
+      (navPath === "/contact" ? ' active' : '') + 
+      '">Contact</a></li>'
+    
+    list += '</ul></nav>'
+    return list
   } catch (error) {
-    console.error("Error in getNav:", error);
-    return "<ul><li><a href='/'>Home</a></li></ul>";
+    console.error("getNav error:", error)
+    return '<nav class="site-nav"><ul class="nav-list"><li><a href="/">Home</a></li></ul></nav>'
   }
 }
 

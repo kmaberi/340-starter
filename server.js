@@ -1,5 +1,11 @@
 /* ******************************************
- * This server.js file is the primary file of the 
+app.set("view engine", "ejs");
+app.use(expressLayouts);
+app.set("layout", "layouts/layout"); // Remove the ./ prefix
+
+const { errorHandler } = require('./middleware/error-handler')
+// Error handling middleware - this must be the last middleware used
+app.use(errorHandler)This server.js file is the primary file of the 
  * application. It is used to control the project.
  *******************************************/
 /* ***********************
@@ -15,6 +21,7 @@ const inventoryRoutes = require('./routes/inventory');
 const miscRouter = require('./routes/misc');
 const accountRoutes = require('./routes/account');
 const reviewRoutes = require('./routes/review');
+const categoryRoutes = require('./routes/categories');
 const pool = require('./database/pool');                  // ← assigned so setup route can use pool.query
 const classificationModel = require('./models/classification-model');
 const classificationRouter = require('./routes/classification');
@@ -47,6 +54,11 @@ app.use(checkJwtCookie);              // middleware that reads JWT from cookie a
 app.set("view engine", "ejs");
 app.use(expressLayouts);
 app.set("layout", "layouts/layout"); // Remove the "./" prefix
+
+// Serve favicon.ico from the public/images/site directory
+app.get('/favicon.ico', (req, res) => {
+  res.sendFile(__dirname + '/public/images/site/favicon-32x32.png');
+});
 
 // Make JWT-check middleware available app-wide if you also export it from utilities
 // (If utilities.checkJWTToken is a different function you want to use, you can keep it.)
@@ -92,6 +104,9 @@ app.use('/account', accountRoutes);
 // Inventory routes
 app.use('/inv', inventoryRoutes);
 app.use('/inventory', inventoryRoutes); // for detail pages (public access)
+
+// Category and main navigation routes
+app.use('/', categoryRoutes);
 
 // Review routes
 app.use('/review', reviewRoutes);

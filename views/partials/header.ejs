@@ -1,11 +1,21 @@
-<header>
-  <h1>CSE Motors</h1>
-  <nav id="main-nav" class="main-nav" role="navigation" aria-label="Main Navigation">
-    <ul class="nav-list">
-      <li><a href="/" class="nav-link">Home</a></li>
-      <li><a href="/inventory" class="nav-link">Inventory</a></li>
-      <li><a href="/about" class="nav-link">About</a></li>
-      <li><a href="/contact" class="nav-link">Contact</a></li>
-    </ul>
-  </nav>
+<header class="site-header">
+  <div class="header-content">
+    <a href="/" class="logo">
+      <h1>CSE Motors</h1>
+    </a>
+
+    <div class="account-nav">
+      <% if (typeof loggedin !== 'undefined' && loggedin) { %>
+        <a href="/account/management" class="account-link">
+          <img src="/images/site/icon.png" alt="Avatar" class="account-avatar">
+          <span>Welcome, <%= accountData ? accountData.account_firstname : 'User' %></span>
+        </a>
+        <a href="/account/logout" class="nav-link">Logout</a>
+      <% } else { %>
+        <a href="/account/login" class="nav-link">My Account</a>
+      <% } %>
+    </div>
+  </div>
+  
+  <%- include('./navigationpartial') %>
 </header>
