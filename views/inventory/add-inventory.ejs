@@ -1,32 +1,49 @@
-<main>
-  <h1>Add New Vehicle</h1>
-  <div class="form-container">
-    <% if (message && message.length > 0) { %>
-      <div class="flash-message"><%= message %></div>
-    <% } %>
-    <form action="/inv/add-inventory" method="POST" novalidate>
-      <label for="classificationList">Classification:</label>
-      <%- classificationList %>
-      <label for="inv_make">Make:</label>
-      <input type="text" name="inv_make" id="inv_make" required value="<%= inv_make || '' %>">
-      <label for="inv_model">Model:</label>
-      <input type="text" name="inv_model" id="inv_model" required value="<%= inv_model || '' %>">
-      <label for="inv_year">Year:</label>
-      <input type="number" name="inv_year" id="inv_year" min="1900" max="2099" required value="<%= inv_year || '' %>">
-      <label for="inv_description">Description:</label>
-      <textarea name="inv_description" id="inv_description" required><%= inv_description || '' %></textarea>
-      <label for="inv_image">Image Path:</label>
-      <input type="text" name="inv_image" id="inv_image" required value="<%= inv_image || '/images/vehicles/no-image.png' %>">
-      <label for="inv_thumbnail">Thumbnail Path:</label>
-      <input type="text" name="inv_thumbnail" id="inv_thumbnail" required value="<%= inv_thumbnail || '/images/vehicles/no-image-tn.png' %>">
-      <label for="inv_price">Price:</label>
-      <input type="number" name="inv_price" id="inv_price" step="0.01" required value="<%= inv_price || '' %>">
-      <label for="inv_miles">Miles:</label>
-      <input type="number" name="inv_miles" id="inv_miles" required value="<%= inv_miles || '' %>">
-      <label for="inv_color">Color:</label>
-      <input type="text" name="inv_color" id="inv_color" required value="<%= inv_color || '' %>">
+<% include ../partials/header %>
+
+<main class="container">
+  <h1>Add Inventory</h1>
+
+  <% if (message) { %>
+    <div class="message"><%= message %></div>
+  <% } %>
+
+  <form method="post" action="/inv/add-inventory" novalidate>
+    <fieldset>
+      <legend>Vehicle Data</legend>
+
+      <label for="classificationList">Classification</label>
+      <%- classificationList %>  <!-- classificationList is built server-side and is the select markup -->
+
+      <label for="inv_make">Make</label>
+      <input id="inv_make" name="inv_make" type="text" required value="<%= inv_make || '' %>">
+
+      <label for="inv_model">Model</label>
+      <input id="inv_model" name="inv_model" type="text" required value="<%= inv_model || '' %>">
+
+      <label for="inv_year">Year</label>
+      <input id="inv_year" name="inv_year" type="number" min="1900" max="2099" required value="<%= inv_year || '' %>">
+
+      <label for="inv_price">Price</label>
+      <input id="inv_price" name="inv_price" type="number" step="0.01" required value="<%= inv_price || '' %>">
+
+      <label for="inv_miles">Miles</label>
+      <input id="inv_miles" name="inv_miles" type="number" required value="<%= inv_miles || '' %>">
+
+      <label for="inv_color">Color</label>
+      <input id="inv_color" name="inv_color" type="text" required value="<%= inv_color || '' %>">
+
+      <label for="inv_image">Image path</label>
+      <input id="inv_image" name="inv_image" type="text" required value="<%= inv_image || '/img/no-image-available.png' %>">
+
+      <label for="inv_thumbnail">Thumbnail path</label>
+      <input id="inv_thumbnail" name="inv_thumbnail" type="text" required value="<%= inv_thumbnail || '/img/no-image-available-tn.png' %>">
+
+      <label for="inv_description">Description</label>
+      <textarea id="inv_description" name="inv_description" required><%= inv_description || '' %></textarea>
+
       <button type="submit">Add Vehicle</button>
-    </form>
-  </div>
-  <a href="/inv">Back to Management</a>
+    </fieldset>
+  </form>
 </main>
+
+<% include ../partials/footer %>

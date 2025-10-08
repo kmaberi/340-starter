@@ -1,6 +1,6 @@
-const jwt = require("jsonwebtoken")
-require("dotenv").config()
-const classificationModel = require('../models/classification-model')
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
+const classificationModel = require('../models/classification-model');
 
 function formatNumberWithCommas(n) {
   const num = Number(n);
@@ -12,19 +12,16 @@ function toUSDollars(n) {
 }
 
 function renderVehicleDetailHTML(v) {
-  // Build thumbnail gallery array
   const thumbs = v.inv_thumbnail
     ? v.inv_thumbnail.split(',').map(fn =>
         fn.trim().startsWith('/') ? fn.trim() : `/img/vehicles/${fn.trim()}`
       )
     : [];
 
-  // Main image path
-  const mainImg = v.inv_image.startsWith('/') ? v.inv_image : `/img/vehicles/${v.inv_image}`;
+  const mainImg = v.inv_image && v.inv_image.startsWith('/') ? v.inv_image : `/img/vehicles/${v.inv_image}`;
 
   return `
   <div class="vehicle-detail">
-    <!-- LEFT: Image + Gallery -->
     <div class="detail-gallery">
       <img src="${mainImg}" alt="${v.inv_make} ${v.inv_model}" class="main-img"/>
       <div class="thumbs">
@@ -32,11 +29,9 @@ function renderVehicleDetailHTML(v) {
       </div>
     </div>
 
-    <!-- RIGHT: Specs & Actions -->
     <div class="detail-info">
       <h2>${v.inv_make} ${v.inv_model} (${v.inv_year})</h2>
 
-      <!-- Price & Mileage strip -->
       <div class="strip">
         <div class="strip-item">
           <span class="label">Mileage</span>
@@ -48,7 +43,6 @@ function renderVehicleDetailHTML(v) {
         </div>
       </div>
 
-      <!-- Detail list -->
       <ul class="spec-list">
         <li><strong>Color:</strong> ${v.inv_color}</li>
         <li><strong>Fuel Type:</strong> ${v.inv_fuel}</li>
@@ -56,13 +50,11 @@ function renderVehicleDetailHTML(v) {
         <li><strong>Transmission:</strong> ${v.inv_transmission || 'Not specified'}</li>
       </ul>
 
-      <!-- Description -->
       <div class="description">
         <h4>Description</h4>
         <p>${v.inv_description}</p>
       </div>
 
-      <!-- CTA buttons -->
       <div class="cta-buttons">
         <button class="btn btn-primary">Contact Us</button>
         <button class="btn btn-secondary">Schedule Test Drive</button>
@@ -75,15 +67,16 @@ function renderVehicleDetailHTML(v) {
 /* ************************
  * Constructs the nav HTML unordered list
  ************************** */
+// inside utilities/index.js
+
 async function getNav(){
   try {
-    let data = await classificationModel.getClassifications()
-    let list = "<ul>"
-    list += '<li><a href="/" title="Home page">Home</a></li>'
-    // Fix: data is already an array from classification model, not data.rows
+    let data = await classificationModel.getClassifications();
+    let list = "<ul>";
+    list += '<li><a href="/" title="Home page">Home</a></li>';
     if (data && Array.isArray(data)) {
       data.forEach((row) => {
-        list += "<li>"
+        list += "<li>";
         list +=
           '<a href="/inv/type/' +
           row.classification_id +
@@ -91,106 +84,127 @@ async function getNav(){
           row.classification_name +
           ' vehicles">' +
           row.classification_name +
-          "</a>"
-        list += "</li>"
-      })
+          "</a>";
+        list += "</li>";
+      });
     }
-    list += "</ul>"
-    return list
+    list += "</ul>";
+    return list;
   } catch (error) {
-    console.error("Error in getNav:", error)
-    return "<ul><li><a href='/'>Home</a></li></ul>"
+    console.error("Error in getNav:", error);
+    return "<ul><li><a href='/'>Home</a></li></ul>";
   }
 }
 
 /* **************************************
 * Build the classification view HTML
 * ************************************ */
+async function buildClassificationList(selectedId = null) {
+  const data = await classificationModel.getClassifications(); // returns array or rows
+  let classificationList = '<select name="classification_id" id="classificationList" required>';
+  classificationList += '<option value="">Choose a Classification</option>';
+  data.forEach((row) => {
+    classificationList += `<option value="${row.classification_id}" ${selectedId && row.classification_id == selectedId ? 'selected' : ''}>${row.classification_name}</option>`;
+  });
+  classificationList += '</select>';
+  return classificationList;
+}
+
 async function buildClassificationGrid(data){
-  let grid
-  if(data.length > 0){
-    grid = '<ul id="inv-display">'
+  let grid = '';
+  if(Array.isArray(data) && data.length > 0){
+    grid = '<ul id="inv-display">';
     data.forEach(vehicle => { 
-      grid += '<li>'
+      grid += '<li>';
       grid +=  '<a href="../../inv/detail/'+ vehicle.inv_id 
       + '" title="View ' + vehicle.inv_make + ' '+ vehicle.inv_model 
-      + 'details"><img src="' + vehicle.inv_thumbnail 
+      + ' details"><img src="' + vehicle.inv_thumbnail 
       +'" alt="Image of '+ vehicle.inv_make + ' ' + vehicle.inv_model 
-      +' on CSE Motors" /></a>'
-      grid += '<div class="namePrice">'
-      grid += '<hr />'
-      grid += '<h2>'
+      +' on CSE Motors" /></a>';
+      grid += '<div class="namePrice">';
+      grid += '<hr />';
+      grid += '<h2>';
       grid += '<a href="../../inv/detail/' + vehicle.inv_id +'" title="View ' 
       + vehicle.inv_make + ' ' + vehicle.inv_model + ' details">' 
-      + vehicle.inv_make + ' ' + vehicle.inv_model + '</a>'
-      grid += '</h2>'
+      + vehicle.inv_make + ' ' + vehicle.inv_model + '</a>';
+      grid += '</h2>';
       grid += '<span>$' 
-      + new Intl.NumberFormat('en-US').format(vehicle.inv_price) + '</span>'
-      grid += '</div>'
-      grid += '</li>'
-    })
-    grid += '</ul>'
+      + new Intl.NumberFormat('en-US').format(vehicle.inv_price) + '</span>';
+      grid += '</div>';
+      grid += '</li>';
+    });
+    grid += '</ul>';
   } else { 
-    grid += '<p class="notice">Sorry, no matching vehicles could be found.</p>'
+    grid = '<p class="notice">Sorry, no matching vehicles could be found.</p>';
   }
-  return grid
+  return grid;
 }
 
 /* ****************************************
  * Middleware For Handling Errors
- * Wrap other function in this for 
- * General Error Handling
  **************************************** */
 function handleErrors(fn) {
-  return (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next)
+  return (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next);
 }
 
 /* ****************************************
-* Middleware to check token validity
-**************************************** */
+ * Middleware to check token validity
+ **************************************** */
 function checkJWTToken(req, res, next) {
-  if (req.cookies.jwt) {
-   jwt.verify(
-    req.cookies.jwt,
-    process.env.ACCESS_TOKEN_SECRET,
-    function (err, accountData) {
-     if (err) {
-      req.flash("notice", "Please log in")
-      res.clearCookie("jwt")
-      return res.redirect("/account/login")
-     }
-     res.locals.accountData = accountData
-     res.locals.loggedin = 1
-     next()
-    })
+  if (req.cookies && req.cookies.jwt) {
+    jwt.verify(
+      req.cookies.jwt,
+      process.env.ACCESS_TOKEN_SECRET,
+      function (err, accountData) {
+        if (err) {
+          req.flash("notice", "Please log in");
+          res.clearCookie("jwt");
+          return res.redirect("/account/login");
+        }
+        res.locals.accountData = accountData;
+        res.locals.loggedin = 1;
+        next();
+      }
+    );
   } else {
-   next()
+    next();
   }
- }
+}
 
 /* ****************************************
  *  Check Login
  * ************************************ */
 function checkLogin(req, res, next) {
   if (res.locals.loggedin) {
-    next()
+    next();
   } else {
-    req.flash("notice", "Please log in.")
-    return res.redirect("/account/login")
+    req.flash("notice", "Please log in.");
+    return res.redirect("/account/login");
   }
- }
+}
 
 /* ****************************************
  *  Check Account Type for Employee/Admin
  * ************************************ */
 function checkAccountType(req, res, next) {
-  if (res.locals.loggedin && (res.locals.accountData.account_type == "Employee" || res.locals.accountData.account_type == "Admin")) {
-    next()
+  if (res.locals.loggedin && (res.locals.accountData && (res.locals.accountData.account_type == "Employee" || res.locals.accountData.account_type == "Admin"))) {
+    next();
   } else {
-    req.flash("notice", "You do not have permission to access this resource.")
-    return res.redirect("/account/login")
+    req.flash("notice", "You do not have permission to access this resource.");
+    return res.redirect("/account/login");
   }
 }
+
+/* ****************************************
+ * Shared data / metadata for site
+ **************************************** */
+const siteMeta = {
+  siteName: '340 Starter',
+  author: 'kmaberi',
+  createdAt: new Date().toISOString(),
+};
+
+console.log('utilities loaded');
 
 module.exports = {
   formatNumberWithCommas,
@@ -201,5 +215,6 @@ module.exports = {
   handleErrors,
   checkJWTToken,
   checkLogin,
-  checkAccountType
-}
+  checkAccountType,
+  siteMeta, // exported metadata
+};

@@ -1,34 +1,23 @@
 const express = require('express');
 const router = express.Router();
 const invController = require('../controllers/inventoryController');
-const utilities = require('../utilities/');
-const invValidate = require('../utilities/inventory-validation');
+const utilities = require('../utilities');
+const invValidate = require('../utilities/inventory-validation'); // optional express-validator middleware
 
-// Route to build inventory by classification view (public)
-router.get("/type/:classificationId", utilities.handleErrors(invController.buildByClassificationId));
+// Management view (access by /inv/)
+router.get('/', utilities.handleErrors(invController.buildManagementView));
 
-// Route to build inventory item detail view (public) - matches existing controller function
-router.get('/detail/:inv_id', utilities.handleErrors(invController.getVehicleDetail));
-
-// Management routes (require Employee/Admin access)
-router.get("/", utilities.checkLogin, utilities.checkAccountType, utilities.handleErrors(invController.managementView));
-router.get("/add-classification", utilities.checkLogin, utilities.checkAccountType, utilities.handleErrors(invController.addClassificationView));
-router.get("/add-inventory", utilities.checkLogin, utilities.checkAccountType, utilities.handleErrors(invController.addInventoryView));
-
-// POST routes for adding data (require Employee/Admin access)
-router.post("/add-classification", 
-  utilities.checkLogin,
-  utilities.checkAccountType,
-  invValidate.classificationRules(),
-  invValidate.checkClassData,
+// Add classification - GET & POST
+router.get('/add-classification', utilities.handleErrors(invController.addClassificationView));
+router.post('/add-classification',
+  // optional server-side validation middleware - you can use invValidate.classificationRules() if implemented
   utilities.handleErrors(invController.addClassification)
 );
 
-router.post("/add-inventory", 
-  utilities.checkLogin,
-  utilities.checkAccountType,
-  invValidate.inventoryRules(),
-  invValidate.checkInvData,
+// Add inventory - GET & POST
+router.get('/add-inventory', utilities.handleErrors(invController.addInventoryView));
+router.post('/add-inventory',
+  // optional server-side validation middleware - e.g. invValidate.inventoryRules()
   utilities.handleErrors(invController.addInventory)
 );
 

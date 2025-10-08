@@ -1,0 +1,22 @@
+<% include ../partials/header %>
+
+<main>
+  <h1>Account Management</h1>
+
+  <% if (locals.message) { %>
+    <div class="message"><%= locals.message %></div>
+  <% } %>
+
+  <% if (!locals.accountData) { %>
+    <p>Please <a href="/account/login">login</a>.</p>
+  <% } else { %>
+    <h2>Welcome <%= locals.accountData.firstname %></h2>
+
+    <% if (locals.accountData.account_type === 'Employee' || locals.accountData.account_type === 'Admin') { %>
+      <h3>Inventory Management</h3>
+      <p><a href="/inventory/management">Manage Inventory</a></p>
+    <% } %>
+
+    <p><a href="/account/update/<%= locals.accountData.account_id %>">Update Account Information</a></p>
+  <% } %>
+</main>

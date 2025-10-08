@@ -7,7 +7,7 @@
  *************************/
 const express = require("express");
 const expressLayouts = require("express-ejs-layouts");
-const cookieParser = require("cookie-parser");
+const cookieParser = require("cookie-parser");            // ← declared once
 require("dotenv").config();
 const app = express();
 const static = require("./routes/static");
@@ -15,26 +15,18 @@ const inventoryRoutes = require('./routes/inventory');
 const miscRouter = require('./routes/misc');
 const accountRoutes = require('./routes/account');
 const reviewRoutes = require('./routes/review');
-require('./database/pool');
+const pool = require('./database/pool');                  // ← assigned so setup route can use pool.query
 const classificationModel = require('./models/classification-model');
 const classificationRouter = require('./routes/classification');
 const session = require('express-session');
 const flash = require('connect-flash');
 const utilities = require('./utilities/');
+const { checkJwtCookie } = require('./utilities/accountAuth');
 
 /* ***********************
- * View Engine and Templates
+ * Middleware & View Engine
  *************************/
-app.set("view engine", "ejs");
-app.use(expressLayouts);
-app.set("layout", "layouts/layout"); // Remove the "./" prefix
-
-/* ***********************
- * Middleware
- *************************/
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-app.use(cookieParser());
+app.use(cookieParser());              // use cookie-parser once (before middleware that reads cookies)
 
 app.use(session({
   secret: process.env.SESSION_SECRET || 'yourSecretKey',
@@ -44,9 +36,25 @@ app.use(session({
 }));
 app.use(flash());
 
-// Add JWT token check to all routes
-app.use(utilities.checkJWTToken);
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
+app.use(checkJwtCookie);              // middleware that reads JWT from cookie and sets res.locals
+
+/* ***********************
+ * View Engine and Templates
+ *************************/
+app.set("view engine", "ejs");
+app.use(expressLayouts);
+app.set("layout", "layouts/layout"); // Remove the "./" prefix
+
+// Make JWT-check middleware available app-wide if you also export it from utilities
+// (If utilities.checkJWTToken is a different function you want to use, you can keep it.)
+// app.use(utilities.checkJWTToken);
+
+/* ***********************
+ * Load classifications for header (or navigation)
+ *************************/
 app.use(async (req, res, next) => {
   try {
     const classifications = await classificationModel.getClassifications();
