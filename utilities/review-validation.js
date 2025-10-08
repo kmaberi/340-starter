@@ -40,8 +40,8 @@ validate.checkReviewData = async (req, res, next) => {
   errors = validationResult(req)
   if (!errors.isEmpty()) {
     let nav = await utilities.getNav()
-    const inventoryModel = require("../models/inventoryModel")
-    const vehicle = await inventoryModel.getVehicleById(inv_id)
+  const inventoryModel = require("../models/inventory-model")
+  const vehicle = await inventoryModel.getVehicleById(inv_id)
     res.render("reviews/add-review", {
       errors,
       title: vehicle ? `Review ${vehicle.inv_make} ${vehicle.inv_model}` : "Add Review",
