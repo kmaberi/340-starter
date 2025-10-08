@@ -6,61 +6,35 @@ function formatNumberWithCommas(n) {
   const num = Number(n);
   return num.toLocaleString();
 }
+
 function toUSDollars(n) {
   const num = Number(n);
   return '$' + num.toLocaleString(undefined, { maximumFractionDigits: 0 });
 }
 
 function renderVehicleDetailHTML(v) {
-  const thumbs = v.inv_thumbnail
-    ? v.inv_thumbnail.split(',').map(fn =>
-        fn.trim().startsWith('/') ? fn.trim() : `/img/vehicles/${fn.trim()}`
-      )
-    : [];
-
-  const mainImg = v.inv_image && v.inv_image.startsWith('/') ? v.inv_image : `/img/vehicles/${v.inv_image}`;
-
+  const mainImg = v.inv_image && v.inv_image.startsWith('/') ? v.inv_image : `/images/vehicles/${v.inv_image}`;
   return `
-  <div class="vehicle-detail">
-    <div class="detail-gallery">
-      <img src="${mainImg}" alt="${v.inv_make} ${v.inv_model}" class="main-img"/>
-      <div class="thumbs">
-        ${thumbs.map(t => `<img src="${t}" class="thumb" />`).join('')}
+    <div class="vehicle-detail-container">
+      <div class="vehicle-detail-image">
+        <img src="${mainImg}" alt="${v.inv_make} ${v.inv_model}" />
       </div>
-    </div>
-
-    <div class="detail-info">
-      <h2>${v.inv_make} ${v.inv_model} (${v.inv_year})</h2>
-
-      <div class="strip">
-        <div class="strip-item">
-          <span class="label">Mileage</span>
-          <span class="value">${formatNumberWithCommas(v.inv_miles)}</span>
-        </div>
-        <div class="strip-item stripe-right">
-          <span class="label">Price</span>
-          <span class="value">${toUSDollars(v.inv_price)}</span>
+      <div class="vehicle-detail-info">
+        <h1>${v.inv_make} ${v.inv_model} (${v.inv_year})</h1>
+        <h2>Price: $${Number(v.inv_price).toLocaleString()}</h2>
+        <ul>
+          <li><strong>Mileage:</strong> ${Number(v.inv_miles).toLocaleString()} miles</li>
+          <li><strong>Color:</strong> ${v.inv_color}</li>
+          <li><strong>Fuel Type:</strong> ${v.inv_fuel}</li>
+          <li><strong>Engine:</strong> ${v.inv_engine || 'Not specified'}</li>
+          <li><strong>Transmission:</strong> ${v.inv_transmission || 'Not specified'}</li>
+        </ul>
+        <div class="vehicle-detail-description">
+          <h4>Description</h4>
+          <p>${v.inv_description}</p>
         </div>
       </div>
-
-      <ul class="spec-list">
-        <li><strong>Color:</strong> ${v.inv_color}</li>
-        <li><strong>Fuel Type:</strong> ${v.inv_fuel}</li>
-        <li><strong>Engine:</strong> ${v.inv_engine || 'Not specified'}</li>
-        <li><strong>Transmission:</strong> ${v.inv_transmission || 'Not specified'}</li>
-      </ul>
-
-      <div class="description">
-        <h4>Description</h4>
-        <p>${v.inv_description}</p>
-      </div>
-
-      <div class="cta-buttons">
-        <button class="btn btn-primary">Contact Us</button>
-        <button class="btn btn-secondary">Schedule Test Drive</button>
-      </div>
     </div>
-  </div>
   `;
 }
 
@@ -211,10 +185,11 @@ module.exports = {
   toUSDollars,
   renderVehicleDetailHTML,
   getNav,
+  buildClassificationList,
   buildClassificationGrid,
   handleErrors,
   checkJWTToken,
   checkLogin,
   checkAccountType,
-  siteMeta, // exported metadata
+  siteMeta,
 };

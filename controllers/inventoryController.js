@@ -1,3 +1,21 @@
+// Vehicle detail view
+exports.buildDetailView = async (req, res, next) => {
+  try {
+    const inv_id = req.params.inv_id;
+    const vehicle = await inventoryModel.getVehicleById(inv_id);
+    if (!vehicle) {
+      return res.status(404).render('error', { title: 'Vehicle Not Found', message: 'Vehicle not found.' });
+    }
+    const vehicleDetailHTML = await utilities.renderVehicleDetailHTML(vehicle);
+    res.render('inventory/detail', {
+      title: `${vehicle.inv_make} ${vehicle.inv_model} Details`,
+      vehicle,
+      vehicleDetailHTML
+    });
+  } catch (err) {
+    next(err);
+  }
+};
 const inventoryModel = require('../models/inventoryModel'); // must provide insert functions
 const utilities = require('../utilities');
 const validator = require('validator');
