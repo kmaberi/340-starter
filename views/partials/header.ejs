@@ -1,21 +1,22 @@
-<header class="site-header">
+<header>
   <div class="header-content">
-    <a href="/" class="logo">
-      <h1>CSE Motors</h1>
-    </a>
+    <div class="site-brand">
+      <a href="/" class="logo">CSE Motors</a>
+    </div>
 
-    <div class="account-nav">
-      <% if (typeof loggedin !== 'undefined' && loggedin) { %>
-        <a href="/account/management" class="account-link">
-          <img src="/images/site/icon.png" alt="Avatar" class="account-avatar">
-          <span>Welcome, <%= accountData ? accountData.account_firstname : 'User' %></span>
-        </a>
-        <a href="/account/logout" class="nav-link">Logout</a>
+    <div class="account-tools">
+      <% if (locals.loggedin) { %>
+        <div class="logged-in">
+          <a href="/account/management" class="account-link">
+            <img src="/images/site/icon.png" alt="Account" class="account-icon">
+            Welcome <%= locals.accountData.account_firstname %>
+          </a>
+          <a href="/account/logout" class="logout-link">Logout</a>
+        </div>
       <% } else { %>
-        <a href="/account/login" class="nav-link">My Account</a>
+        <a href="/account/login" class="account-link">My Account</a>
       <% } %>
     </div>
   </div>
-  
-  <%- include('./navigationpartial') %>
+</header>
 </header>

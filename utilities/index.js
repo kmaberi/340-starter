@@ -12,30 +12,51 @@ function toUSDollars(n) {
   return '$' + num.toLocaleString(undefined, { maximumFractionDigits: 0 });
 }
 
-function renderVehicleDetailHTML(v) {
-  const mainImg = v.inv_image && v.inv_image.startsWith('/') ? v.inv_image : `/images/vehicles/${v.inv_image}`;
-  return `
-    <div class="vehicle-detail-container">
-      <div class="vehicle-detail-image">
-        <img src="${mainImg}" alt="${v.inv_make} ${v.inv_model}" />
-      </div>
-      <div class="vehicle-detail-info">
-        <h1>${v.inv_make} ${v.inv_model} (${v.inv_year})</h1>
-        <h2>Price: $${Number(v.inv_price).toLocaleString()}</h2>
-        <ul>
-          <li><strong>Mileage:</strong> ${Number(v.inv_miles).toLocaleString()} miles</li>
-          <li><strong>Color:</strong> ${v.inv_color}</li>
-          <li><strong>Fuel Type:</strong> ${v.inv_fuel}</li>
-          <li><strong>Engine:</strong> ${v.inv_engine || 'Not specified'}</li>
-          <li><strong>Transmission:</strong> ${v.inv_transmission || 'Not specified'}</li>
-        </ul>
-        <div class="vehicle-detail-description">
-          <h4>Description</h4>
-          <p>${v.inv_description}</p>
-        </div>
-      </div>
-    </div>
-  `;
+function buildClassificationGrid(data) {
+  let grid
+  if (data.length > 0) {
+    grid = '<ul id="inv-display">'
+    data.forEach(vehicle => {
+      grid += '<li>'
+      grid += '<a href="../../inv/detail/' + vehicle.inv_id 
+      + '" title="View ' + vehicle.inv_make + ' ' + vehicle.inv_model 
+      + ' details"><img src="' + vehicle.inv_thumbnail 
+      + '" alt="Image of ' + vehicle.inv_make + ' ' + vehicle.inv_model 
+      + ' on CSE Motors"></a>'
+      grid += '<div class="namePrice">'
+      grid += '<hr>'
+      grid += '<h2>'
+      grid += '<a href="../../inv/detail/' + vehicle.inv_id + '" title="View ' 
+      + vehicle.inv_make + ' ' + vehicle.inv_model + ' details">' 
+      + vehicle.inv_make + ' ' + vehicle.inv_model + '</a>'
+      grid += '</h2>'
+      grid += '<span>$' + new Intl.NumberFormat('en-US').format(vehicle.inv_price) + '</span>'
+      grid += '</div>'
+      grid += '</li>'
+    })
+    grid += '</ul>'
+  } else {
+    grid = '<p class="notice">Sorry, no matching vehicles could be found.</p>'
+  }
+  return grid
+}
+
+function renderVehicleDetailHTML(vehicle) {
+  let html = '<div class="vehicle-detail">'
+  html += '<div class="vehicle-image">'
+  html += `<img src="${vehicle.inv_image}" alt="${vehicle.inv_make} ${vehicle.inv_model}">`
+  html += '</div>'
+  html += '<div class="vehicle-info">'
+  html += `<h2>${vehicle.inv_year} ${vehicle.inv_make} ${vehicle.inv_model}</h2>`
+  html += '<div class="vehicle-specs">'
+  html += `<p class="price">Price: $${new Intl.NumberFormat('en-US').format(vehicle.inv_price)}</p>`
+  html += `<p>Mileage: ${new Intl.NumberFormat('en-US').format(vehicle.inv_miles)}</p>`
+  html += `<p>Color: ${vehicle.inv_color}</p>`
+  html += '</div>'
+  html += `<p class="description">${vehicle.inv_description}</p>`
+  html += '</div>'
+  html += '</div>'
+  return html
 }
 
 /* ************************
@@ -43,44 +64,28 @@ function renderVehicleDetailHTML(v) {
  ************************** */
 // inside utilities/index.js
 
-async function getNav(navPath = "/"){
+/* ************************
+ * Constructs the nav HTML unordered list
+ ************************** */
+async function getNav() {
   try {
     const data = await classificationModel.getClassifications()
-    let list = '<nav class="site-nav" aria-label="Vehicle Categories"><ul class="nav-list">'
-    list += '<li><a href="/" class="nav-link' + 
-      (navPath === "/" ? ' active' : '') + 
-      '">Home</a></li>'
-    
-    // Create a Set to store unique classification names
-    const seenClassifications = new Set()
-    
+    let list = '<ul class="nav-list">'
+    list += '<li><a href="/" title="Home page" class="nav-link">Home</a></li>'
     data.forEach(row => {
-      // Only add the classification if we haven't seen it before
-      if (!seenClassifications.has(row.classification_name)) {
-        seenClassifications.add(row.classification_name)
-        list += '<li><a href="/inv/type/' + 
-          row.classification_id + 
-          '" class="nav-link' +
-          (navPath === "/inv/type/" + row.classification_id ? ' active' : '') + 
-          '">' + 
-          row.classification_name + 
-          '</a></li>'
-      }
+      list += `<li>
+        <a href="/inv/type/${row.classification_id}" 
+           title="See our ${row.classification_name} lineup" 
+           class="nav-link">
+          ${row.classification_name}
+        </a>
+      </li>`
     })
-    
-    // Add additional main navigation items
-    list += '<li><a href="/about" class="nav-link' + 
-      (navPath === "/about" ? ' active' : '') + 
-      '">About</a></li>'
-    list += '<li><a href="/contact" class="nav-link' + 
-      (navPath === "/contact" ? ' active' : '') + 
-      '">Contact</a></li>'
-    
-    list += '</ul></nav>'
+    list += '</ul>'
     return list
   } catch (error) {
     console.error("getNav error:", error)
-    return '<nav class="site-nav"><ul class="nav-list"><li><a href="/">Home</a></li></ul></nav>'
+    return '<ul class="nav-list"><li><a href="/" class="nav-link">Home</a></li></ul>'
   }
 }
 

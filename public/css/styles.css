@@ -45,10 +45,242 @@ body {
   padding: 0 var(--container-pad);
 }
 
+/* ---------- Categories Grid ---------- */
+.categories-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  padding: 2rem 0;
+}
+
+.category-card {
+  position: relative;
+  background: var(--accent);
+  color: white;
+  padding: 2rem;
+  border-radius: var(--radius);
+  text-decoration: none;
+  text-align: center;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.category-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
+}
+
+.category-card h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.category-card .overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.category-card:hover .overlay {
+  opacity: 1;
+}
+
+.view-link {
+  background: white;
+  color: var(--accent);
+  padding: 0.5rem 1rem;
+  border-radius: 2rem;
+  font-weight: 500;
+}
+
+/* ---------- Vehicle Grid ---------- */
+#inv-display {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  padding: 0;
+  margin: 2rem 0;
+  list-style: none;
+}
+
+#inv-display li {
+  background: var(--card);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+#inv-display li:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
+}
+
+#inv-display img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.namePrice {
+  padding: 1rem;
+}
+
+.namePrice h2 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.namePrice a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.namePrice span {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.namePrice hr {
+  margin: 0.5rem 0;
+  border: none;
+  border-top: 1px solid var(--border-color);
+}
+
 /* ---------- Header / Navigation ---------- */
-.site-header {
+header {
   background: var(--card);
   box-shadow: var(--shadow-sm);
+  padding: 1rem 0;
+}
+
+.header-content {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--container-pad);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.site-brand .logo {
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.account-tools {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.logged-in {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.account-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: var(--text);
+  font-weight: 500;
+}
+
+.account-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+}
+
+.logout-link {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.main-nav {
+  background: var(--accent);
+  margin-top: 0.5rem;
+}
+
+.nav-list {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--container-pad);
+  list-style: none;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.nav-link {
+  color: white;
+  text-decoration: none;
+  padding: 0.75rem 1rem;
+  display: block;
+  border-radius: var(--radius);
+  transition: background-color 0.2s;
+}
+
+.nav-link:hover {
+  background: var(--accent-700);
+}
+
+@media (max-width: 640px) {
+  .nav-list {
+    flex-direction: column;
+    padding: 0.5rem var(--container-pad);
+  }
+  
+  .nav-link {
+    padding: 0.5rem 1rem;
+  }
+
+  .logged-in {
+    flex-direction: column;
+    align-items: flex-end;
+  }
+}
+
+nav {
+  background: var(--accent);
+  padding: 0.5rem var(--container-pad);
+}
+
+nav ul {
+  display: flex;
+  gap: 1rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex-wrap: wrap;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius);
+  transition: background-color 0.2s;
+}
+
+nav a:hover {
+  background: var(--accent-700);
 }
 
 .header-content {

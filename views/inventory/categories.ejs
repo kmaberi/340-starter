@@ -1,0 +1,32 @@
+<%- include('../partials/head') %>
+
+<body>
+  <%- include('../partials/header') %>
+  <%- include('../partials/navigationpartial') %>
+
+  <main class="container">
+    <h1><%= title %></h1>
+
+    <% if (locals.message) { %>
+      <p class="notice"><%= message %></p>
+    <% } %>
+
+    <div class="categories-grid">
+      <% if (locals.classifications && classifications.length > 0) { %>
+        <% classifications.forEach(classification => { %>
+          <a href="/inv/type/<%= classification.classification_id %>" class="category-card">
+            <h2><%= classification.classification_name %></h2>
+            <div class="overlay">
+              <span class="view-link">View Vehicles</span>
+            </div>
+          </a>
+        <% }) %>
+      <% } else { %>
+        <p class="notice">No categories available.</p>
+      <% } %>
+    </div>
+  </main>
+
+  <%- include('../partials/footer') %>
+</body>
+</html>

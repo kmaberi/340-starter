@@ -8,54 +8,29 @@ const utilities = require('../utilities');
 const invController = require('../controllers/inventoryController');
 const { ValidationError, NotFoundError } = require('../views/errors/errors');
 
-// Home page
-router.get('/', utilities.handleErrors(async (req, res) => {
-  res.render('index', {
-    title: 'Home',
-    nav: await utilities.getNav()
-  });
-}));
+// Route to build home page view
+router.get("/", utilities.handleErrors(async (req, res) => {
+  const nav = await utilities.getNav()
+  res.render("index", {
+    title: "Home",
+    nav,
+    errors: null,
+  })
+}))
 
-// Vehicle category routes
-const categories = {
-  'custom': 'Custom Vehicles',
-  'sedan': 'Sedans',
-  'sport': 'Sports Cars',
-  'suv': 'SUVs',
-  'truck': 'Trucks'
-};
-
-// Generic category handler
-const handleCategory = (category, title) => {
-  return utilities.handleErrors(async (req, res) => {
-    try {
-      const vehicles = await invController.getVehiclesByCategory(category);
-      res.render('inventory/category', {
-        title: title,
-        nav: await utilities.getNav(),
-        vehicles: vehicles,
-        category: category
-      });
-    } catch (error) {
-      if (error.name === 'NotFoundError') {
-        res.render('inventory/category', {
-          title: title,
-          nav: await utilities.getNav(),
-          vehicles: [],
-          message: `No ${category} vehicles found`,
-          category: category
-        });
-      } else {
-        throw error;
-      }
-    }
-  });
-};
-
-// Register routes for each category
-Object.entries(categories).forEach(([category, title]) => {
-  router.get(`/${category}`, handleCategory(category, title));
-});
+// Route to build inventory by classification view
+router.get("/inv/type/:classificationId", utilities.handleErrors(async (req, res, next) => {
+  const classification_id = req.params.classificationId
+  const data = await invController.getVehiclesByClassificationId(classification_id)
+  const grid = await utilities.buildClassificationGrid(data)
+  let nav = await utilities.getNav()
+  const className = data[0].classification_name
+  res.render("inventory/classification", {
+    title: className + " vehicles",
+    nav,
+    grid,
+  })
+}))
 
 // About page
 router.get('/about', utilities.handleErrors(async (req, res) => {
