@@ -26,3 +26,4 @@ router.post('/add-inventory',
 router.get('/detail/:inv_id', utilities.handleErrors(invController.buildDetailView));
 
 module.exports = router;
+router.get('/type/:type', utilities.handleErrors(invController.getVehiclesByType));

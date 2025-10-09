@@ -21,7 +21,7 @@ router.get("/", utilities.handleErrors(async (req, res) => {
 // Route to build inventory by classification view
 router.get("/inv/type/:classificationId", utilities.handleErrors(async (req, res, next) => {
   const classification_id = req.params.classificationId
-  const data = await invController.getVehiclesByClassificationId(classification_id)
+  const data = await invController.getVehiclesByType(classification_id)
   const grid = await utilities.buildClassificationGrid(data)
   let nav = await utilities.getNav()
   const className = data[0].classification_name
