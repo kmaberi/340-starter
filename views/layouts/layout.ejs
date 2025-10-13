@@ -1,18 +1,44 @@
-<!DOCTYPE html>
+<!-- views/layouts/layout.ejs -->
+<!doctype html>
 <html lang="en">
-    <head>
-        <%- include('../partials/head') %>
-        <link rel="stylesheet" href="/css/account.css">
+  <head>
+    <%- include('../partials/head') %>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/account.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="header-content container">
+        <a class="logo" href="/">CSE Motors</a>
 
-    </head>
-    <body>
-        <div id="wrapper">
-            <%- include('../partials/header') %>
-            <%- include('../partials/navigationpartial') %>
-            <main>
-                <%- body %>
-            </main>
-            <%- include('../partials/footer') %>
+        <!-- Main nav rendered once from utilities.getNav() -->
+        <nav aria-label="Main navigation">
+          <%- nav %>
+        </nav>
+
+        <div class="account-nav">
+          <% if (typeof loggedin !== 'undefined' && loggedin) { %>
+            <a href="/account" class="account-link">My Account</a>
+          <% } else { %>
+            <a href="/account/login" class="account-link">Login</a>
+          <% } %>
         </div>
-    </body>
+      </div>
+    </header>
+
+    <main role="main" class="container">
+      <%- body %>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p>© <%= new Date().getFullYear() %> CSE Motors. All rights reserved.</p>
+        <nav>
+          <a href="/privacy">Privacy</a> · <a href="/terms">Terms</a>
+        </nav>
+      </div>
+    </footer>
+
+    <script src="/js/site.js"></script>
+  </body>
 </html>

@@ -76,27 +76,36 @@ function renderVehicleDetailHTML(vehicle) {
 /* **************************************
  * Navigation builder
  *************************************** */
+// utilities/index.js — replace existing getNav function with this
 async function getNav() {
   try {
     const data = await classificationModel.getClassifications();
+    const seen = new Set();
     let list = '<ul class="nav-list">';
     list += '<li><a href="/" title="Home page" class="nav-link">Home</a></li>';
     if (Array.isArray(data)) {
       data.forEach(row => {
-        list += `<li>
-          <a href="/inv/type/${row.classification_id}" title="See our ${row.classification_name} lineup" class="nav-link">
-            ${row.classification_name}
-          </a>
-        </li>`;
+        // Avoid duplicates by classification_id
+        if (!seen.has(row.classification_id)) {
+          seen.add(row.classification_id);
+          list += `<li>
+            <a href="/inv/type/${row.classification_id}" 
+               title="See our ${row.classification_name} lineup" 
+               class="nav-link">
+              ${row.classification_name}
+            </a>
+          </li>`;
+        }
       });
     }
     list += '</ul>';
     return list;
   } catch (error) {
-    console.error('getNav error:', error);
+    console.error("getNav error:", error);
     return '<ul class="nav-list"><li><a href="/" class="nav-link">Home</a></li></ul>';
   }
 }
+
 
 /* **************************************
  * Build classification select list (for forms)
