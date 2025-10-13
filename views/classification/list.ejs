@@ -1,19 +1,29 @@
-<!-- filepath: /home/kasule/Documents/Spring Semester 2025/CSE 340 Web Backend Development/CSE-340-starter/views/classification/list.ejs -->
-<main class="container">
-  <h1><%= title %></h1>
-  <% if (vehicles && vehicles.length) { %>
-    <div class="vehicle-cards">
-      <% vehicles.forEach(v => { %>
-        <div class="vehicle-card">
-          <a href="/inventory/detail/<%= v.inv_id %>">
-            <img src="<%= v.inv_image %>" alt="<%= v.inv_make %> <%= v.inv_model %>" class="vehicle-card-img"/>
-            <div class="vehicle-card-title"><%= v.inv_make %> <%= v.inv_model %></div>
-          </a>
-          <div class="vehicle-card-price"><%= toUSDollars(v.inv_price) %></div>
+<%- include('../partials/header', { title }) %>
+
+<h1><%= title %></h1>
+
+<% if (!grid || grid.length === 0) { %>
+  <p>No vehicles found in this category.</p>
+<% } else { %>
+  <div class="vehicle-grid">
+    <% grid.forEach(vehicle => { %>
+      <div class="vehicle-card">
+        <!-- Use the vehicles folder for car images -->
+        <img src="/images/vehicles/<%= vehicle.inv_image.replace('/images/vehicles/', '') %>" 
+             alt="<%= vehicle.inv_make %> <%= vehicle.inv_model %>" 
+             class="vehicle-img" />
+
+        <div class="vehicle-info">
+          <h2><%= vehicle.inv_make %> <%= vehicle.inv_model %></h2>
+          <p>Year: <%= vehicle.inv_year %></p>
+          <p>Price: $<%= vehicle.inv_price.toLocaleString() %></p>
+          <p>Miles: <%= vehicle.inv_miles.toLocaleString() %></p>
+          <p>Color: <%= vehicle.inv_color %></p>
+          <p><%= vehicle.inv_description %></p>
         </div>
-      <% }) %>
-    </div>
-  <% } else { %>
-    <p>No vehicles found for this classification.</p>
-  <% } %>
-</main>
+      </div>
+    <% }) %>
+  </div>
+<% } %>
+
+<%- include('../partials/footer') %>

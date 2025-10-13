@@ -1,99 +1,15 @@
-<% if (flash.notice) { %>
-  <p class="notice"><%= flash.notice %></p>
+<h2>Welcome <%= locals.accountData.account_firstname %></h2>
+
+<p>
+  <a href="/account/update/<%= locals.accountData.account_id %>">
+    Update Account Information
+  </a>
+</p>
+
+<% if (locals.accountData.account_type === "Employee" || 
+       locals.accountData.account_type === "Admin") { %>
+  <h3>Inventory Management</h3>
+  <p>
+    <a href="/inv/">Manage Inventory</a>
+  </p>
 <% } %>
-
-<% if (accountData.account_type === 'Employee') { %>
-  <h1>Welcome Employee <%= accountData.account_firstname %></h1>
-<% } else if (accountData.account_type === 'Admin') { %>
-  <h1>Welcome Administrator <%= accountData.account_firstname %></h1>
-<% } else { %>
-  <h1>Welcome <%= accountData.account_firstname %></h1>
-<% } %>
-
-<div class="account-info">
-  <p><strong>Name:</strong> <%= accountData.account_firstname %> <%= accountData.account_lastname %></p>
-  <p><strong>Email:</strong> <%= accountData.account_email %></p>
-  <p><strong>Account Type:</strong> <%= accountData.account_type %></p>
-</div>
-
-<div class="account-actions">
-  <h2>Account Management</h2>
-  <div class="action-grid">
-    <a href="/account/update/<%= accountData.account_id %>" class="btn btn-primary">Update Account Information</a>
-    <a href="/review/my-reviews" class="btn btn-secondary">My Reviews</a>
-  </div>
-  
-  <% if (accountData.account_type === 'Employee' || accountData.account_type === 'Admin') { %>
-    <h2>Inventory Management</h2>
-    <p>You have access to inventory management features.</p>
-    <div class="action-grid">
-      <a href="/inv" class="btn btn-primary">Manage Inventory</a>
-      <a href="/review/admin" class="btn btn-warning">Moderate Reviews</a>
-    </div>
-  <% } %>
-</div>
-
-<style>
-.account-info {
-  background: #f8f9fa;
-  padding: 20px;
-  border-radius: 8px;
-  margin-bottom: 30px;
-  border-left: 4px solid #4a90e2;
-}
-
-.account-info p {
-  margin: 10px 0;
-  color: #333;
-}
-
-.account-actions h2 {
-  color: #333;
-  margin-bottom: 15px;
-  margin-top: 30px;
-}
-
-.action-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 15px;
-  margin-bottom: 20px;
-}
-
-.btn {
-  display: inline-block;
-  padding: 12px 20px;
-  text-decoration: none;
-  border-radius: 4px;
-  font-weight: bold;
-  text-align: center;
-  transition: all 0.2s;
-}
-
-.btn-primary {
-  background: #4a90e2;
-  color: white;
-}
-
-.btn-primary:hover {
-  background: #357abd;
-}
-
-.btn-secondary {
-  background: #6c757d;
-  color: white;
-}
-
-.btn-secondary:hover {
-  background: #545b62;
-}
-
-.btn-warning {
-  background: #ffc107;
-  color: #212529;
-}
-
-.btn-warning:hover {
-  background: #e0a800;
-}
-</style>

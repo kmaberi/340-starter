@@ -1,0 +1,22 @@
+<div class="account-container">
+  <h1>Update Account</h1>
+
+  <% if (message) { %>
+    <div class="message"><%= message %></div>
+  <% } %>
+
+  <form method="post" action="/account/update" novalidate>
+    <input type="hidden" name="account_id" value="<%= accountData.account_id %>">
+
+    <label for="first_name">First Name</label>
+    <input type="text" id="first_name" name="account_firstname" required value="<%= accountData.account_firstname %>">
+
+    <label for="last_name">Last Name</label>
+    <input type="text" id="last_name" name="account_lastname" required value="<%= accountData.account_lastname %>">
+
+    <label for="email">Email</label>
+    <input type="email" id="email" name="account_email" required value="<%= accountData.account_email %>">
+
+    <button type="submit">Update Account</button>
+  </form>
+</div>

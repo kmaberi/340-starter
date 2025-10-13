@@ -1,0 +1,96 @@
+/* General body styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+/* Container for forms */
+.account-container {
+    max-width: 500px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+}
+
+/* Form heading */
+.account-container h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #222;
+}
+
+/* Input fields */
+.account-container input[type="text"],
+.account-container input[type="email"],
+.account-container input[type="password"],
+.account-container select {
+    width: 100%;
+    padding: 12px 15px;
+    margin: 8px 0 20px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+/* Labels */
+.account-container label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+}
+
+/* Buttons */
+.account-container button {
+    width: 100%;
+    padding: 12px;
+    background-color: #0078d7;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.account-container button:hover {
+    background-color: #005a9e;
+}
+
+/* Message display */
+.message, .notice {
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    background-color: #e0f7fa;
+    color: #006064;
+    font-weight: bold;
+}
+
+/* Links */
+.account-container a {
+    color: #0078d7;
+    text-decoration: none;
+}
+
+.account-container a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .account-container {
+        margin: 20px;
+        padding: 20px;
+    }
+}
+/* Error messages */
+.error {
+    color: #d32f2f;
+    font-weight: bold;
+    margin-bottom: 15px;
+}

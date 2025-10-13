@@ -1,33 +1,21 @@
-// Put this at the very top of the file (first lines)
 require('dotenv').config();
 const { Pool } = require('pg');
 
-// DEBUG: show what Node sees (temporary)
-console.log('DEBUG: DATABASE_URL present?', !!process.env.DATABASE_URL);
-console.log('DEBUG: DB_PASSWORD type:', typeof process.env.DB_PASSWORD, 'value:', JSON.stringify(process.env.DB_PASSWORD));
-
-// Use the connection string if present (preferred)
-const connectionString = process.env.DATABASE_URL || null;
-
-const pool = connectionString
-  ? new Pool({
-      connectionString,
-      // many managed Postgres providers require SSL
-      ssl: { rejectUnauthorized: false },
-    })
-  : new Pool({
-      host: process.env.DB_HOST,
-      port: Number(process.env.DB_PORT || 5432),
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD !== undefined ? String(process.env.DB_PASSWORD) : undefined,
-      database: process.env.DB_NAME,
-      ssl: process.env.DB_HOST ? { rejectUnauthorized: false } : undefined,
-    });
-
-pool.on('error', (err) => {
-  console.error('POOL ERROR', err);
+// Create pool with SSL configuration for Render
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
 
+// Error handler for pool
+pool.on('error', (err) => {
+  console.error('Unexpected error on idle client', err);
+  process.exit(-1);
+});
+
+// Export both query method and pool
 module.exports = {
   query: (text, params) => pool.query(text, params),
   pool,

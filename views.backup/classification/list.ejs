@@ -1,0 +1,19 @@
+<!-- filepath: /home/kasule/Documents/Spring Semester 2025/CSE 340 Web Backend Development/CSE-340-starter/views/classification/list.ejs -->
+<main class="container">
+  <h1><%= title %></h1>
+  <% if (vehicles && vehicles.length) { %>
+    <div class="vehicle-cards">
+      <% vehicles.forEach(v => { %>
+        <div class="vehicle-card">
+          <a href="/inventory/detail/<%= v.inv_id %>">
+            <img src="<%= v.inv_image %>" alt="<%= v.inv_make %> <%= v.inv_model %>" class="vehicle-card-img"/>
+            <div class="vehicle-card-title"><%= v.inv_make %> <%= v.inv_model %></div>
+          </a>
+          <div class="vehicle-card-price"><%= toUSDollars(v.inv_price) %></div>
+        </div>
+      <% }) %>
+    </div>
+  <% } else { %>
+    <p>No vehicles found for this classification.</p>
+  <% } %>
+</main>

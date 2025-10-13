@@ -1,0 +1,368 @@
+<!-- filepath: /home/kasule/Documents/Spring Semester 2025/CSE 340 Web Backend Development/CSE-340-starter/views/reviews/admin-reviews.ejs -->
+<h1><%= title %></h1>
+
+<% if (messages && messages.notice) { %>
+  <p class="notice"><%= messages.notice %></p>
+<% } %>
+
+<div class="admin-reviews-container">
+  <div class="admin-header">
+    <h2>Review Moderation</h2>
+    <p>Manage and moderate user-submitted vehicle reviews</p>
+  </div>
+
+  <div class="review-tabs">
+    <button class="tab-btn active" onclick="showTab('pending')">Pending Reviews (<%= pendingReviews.length %>)</button>
+    <button class="tab-btn" onclick="showTab('approved')">Approved Reviews (<%= approvedReviews.length %>)</button>
+    <button class="tab-btn" onclick="showTab('all')">All Reviews (<%= allReviews.length %>)</button>
+  </div>
+
+  <!-- Pending Reviews Tab -->
+  <div id="pending-tab" class="tab-content active">
+    <% if (pendingReviews && pendingReviews.length > 0) { %>
+      <div class="reviews-list">
+        <% pendingReviews.forEach(review => { %>
+          <div class="review-item pending">
+            <div class="review-header">
+              <div class="review-info">
+                <h3><%= review.review_title %></h3>
+                <div class="meta">
+                  <span class="vehicle"><%= review.inv_make %> <%= review.inv_model %> (<%= review.inv_year %>)</span>
+                  <span class="author">by <%= review.account_firstname %> <%= review.account_lastname %></span>
+                  <span class="date"><%= new Date(review.review_date).toLocaleDateString() %></span>
+                </div>
+              </div>
+              <div class="rating">
+                <% for(let i = 1; i <= 5; i++) { %>
+                  <span class="star <%= i <= review.review_rating ? 'filled' : '' %>">⭐</span>
+                <% } %>
+              </div>
+            </div>
+            
+            <div class="review-content">
+              <p><%= review.review_text %></p>
+            </div>
+            
+            <div class="admin-actions">
+              <form method="post" action="/review/admin/approve" style="display: inline;">
+                <input type="hidden" name="review_id" value="<%= review.review_id %>">
+                <button type="submit" class="btn btn-success">Approve</button>
+              </form>
+              <form method="post" action="/review/admin/reject" style="display: inline;" 
+                    onsubmit="return confirm('Are you sure you want to reject this review?')">
+                <input type="hidden" name="review_id" value="<%= review.review_id %>">
+                <button type="submit" class="btn btn-danger">Reject</button>
+              </form>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    <% } else { %>
+      <div class="no-reviews">
+        <h3>No Pending Reviews</h3>
+        <p>All reviews have been moderated.</p>
+      </div>
+    <% } %>
+  </div>
+
+  <!-- Approved Reviews Tab -->
+  <div id="approved-tab" class="tab-content">
+    <% if (approvedReviews && approvedReviews.length > 0) { %>
+      <div class="reviews-list">
+        <% approvedReviews.forEach(review => { %>
+          <div class="review-item approved">
+            <div class="review-header">
+              <div class="review-info">
+                <h3><%= review.review_title %></h3>
+                <div class="meta">
+                  <span class="vehicle"><%= review.inv_make %> <%= review.inv_model %> (<%= review.inv_year %>)</span>
+                  <span class="author">by <%= review.account_firstname %> <%= review.account_lastname %></span>
+                  <span class="date"><%= new Date(review.review_date).toLocaleDateString() %></span>
+                </div>
+              </div>
+              <div class="rating">
+                <% for(let i = 1; i <= 5; i++) { %>
+                  <span class="star <%= i <= review.review_rating ? 'filled' : '' %>">⭐</span>
+                <% } %>
+              </div>
+            </div>
+            
+            <div class="review-content">
+              <p><%= review.review_text %></p>
+            </div>
+            
+            <div class="status-badge">
+              <span class="approved">✓ Approved</span>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    <% } else { %>
+      <div class="no-reviews">
+        <h3>No Approved Reviews</h3>
+        <p>No reviews have been approved yet.</p>
+      </div>
+    <% } %>
+  </div>
+
+  <!-- All Reviews Tab -->
+  <div id="all-tab" class="tab-content">
+    <% if (allReviews && allReviews.length > 0) { %>
+      <div class="reviews-list">
+        <% allReviews.forEach(review => { %>
+          <div class="review-item <%= review.review_approved ? 'approved' : 'pending' %>">
+            <div class="review-header">
+              <div class="review-info">
+                <h3><%= review.review_title %></h3>
+                <div class="meta">
+                  <span class="vehicle"><%= review.inv_make %> <%= review.inv_model %> (<%= review.inv_year %>)</span>
+                  <span class="author">by <%= review.account_firstname %> <%= review.account_lastname %></span>
+                  <span class="date"><%= new Date(review.review_date).toLocaleDateString() %></span>
+                </div>
+              </div>
+              <div class="rating">
+                <% for(let i = 1; i <= 5; i++) { %>
+                  <span class="star <%= i <= review.review_rating ? 'filled' : '' %>">⭐</span>
+                <% } %>
+              </div>
+            </div>
+            
+            <div class="review-content">
+              <p><%= review.review_text %></p>
+            </div>
+            
+            <div class="status-badge">
+              <span class="<%= review.review_approved ? 'approved' : 'pending' %>">
+                <%= review.review_approved ? '✓ Approved' : '⏳ Pending' %>
+              </span>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    <% } else { %>
+      <div class="no-reviews">
+        <h3>No Reviews</h3>
+        <p>No reviews have been submitted yet.</p>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<script>
+function showTab(tabName) {
+  // Hide all tab contents
+  const tabContents = document.querySelectorAll('.tab-content');
+  tabContents.forEach(tab => tab.classList.remove('active'));
+  
+  // Remove active class from all buttons
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  tabBtns.forEach(btn => btn.classList.remove('active'));
+  
+  // Show selected tab
+  document.getElementById(tabName + '-tab').classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
+
+<style>
+.admin-reviews-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.admin-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.admin-header h2 {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.admin-header p {
+  color: #666;
+  margin: 0;
+}
+
+.review-tabs {
+  display: flex;
+  margin-bottom: 30px;
+  border-bottom: 1px solid #ddd;
+}
+
+.tab-btn {
+  background: none;
+  border: none;
+  padding: 12px 20px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  color: #666;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s;
+}
+
+.tab-btn:hover {
+  color: #4a90e2;
+}
+
+.tab-btn.active {
+  color: #4a90e2;
+  border-bottom-color: #4a90e2;
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+.reviews-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.review-item {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.review-item.pending {
+  border-left: 4px solid #ffc107;
+}
+
+.review-item.approved {
+  border-left: 4px solid #28a745;
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  margin-bottom: 15px;
+}
+
+.review-info h3 {
+  margin: 0 0 10px 0;
+  color: #333;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  font-size: 0.9em;
+  color: #666;
+}
+
+.vehicle {
+  font-weight: bold;
+  color: #4a90e2;
+}
+
+.rating {
+  white-space: nowrap;
+}
+
+.star {
+  color: #ddd;
+  font-size: 16px;
+}
+
+.star.filled {
+  color: #ffc107;
+}
+
+.review-content {
+  margin-bottom: 20px;
+}
+
+.review-content p {
+  margin: 0;
+  color: #555;
+  line-height: 1.5;
+}
+
+.admin-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.status-badge {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.status-badge span {
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 0.8em;
+  font-weight: bold;
+}
+
+.status-badge .approved {
+  background: #d4edda;
+  color: #155724;
+}
+
+.status-badge .pending {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+  transition: background-color 0.2s;
+}
+
+.btn-success {
+  background: #28a745;
+  color: white;
+}
+
+.btn-success:hover {
+  background: #218838;
+}
+
+.btn-danger {
+  background: #dc3545;
+  color: white;
+}
+
+.btn-danger:hover {
+  background: #c82333;
+}
+
+.no-reviews {
+  text-align: center;
+  padding: 60px 20px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.no-reviews h3 {
+  color: #666;
+  margin-bottom: 15px;
+}
+
+.no-reviews p {
+  color: #888;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .review-header {

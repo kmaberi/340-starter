@@ -1,29 +1,36 @@
+// routes/inventory.js
 const express = require('express');
 const router = express.Router();
-const invController = require('../controllers/inventoryController');
 const utilities = require('../utilities');
-const invValidate = require('../utilities/inventory-validation'); // optional express-validator middleware
+const invController = require('../controllers/inventoryController');
 
-// Management view (access by /inv/)
+// GET /inv/  -> inventory management page (or listing)
 router.get('/', utilities.handleErrors(invController.buildManagementView));
 
-// Add classification - GET & POST
+// GET /inv/add-classification -> form to add classification
 router.get('/add-classification', utilities.handleErrors(invController.addClassificationView));
-router.post('/add-classification',
-  // optional server-side validation middleware - you can use invValidate.classificationRules() if implemented
-  utilities.handleErrors(invController.addClassification)
-);
 
-// Add inventory - GET & POST
+// POST /inv/add-classification -> submit new classification
+router.post('/add-classification', utilities.handleErrors(invController.addClassification));
+
+// GET /inv/add-inventory -> form to add a vehicle
 router.get('/add-inventory', utilities.handleErrors(invController.addInventoryView));
-router.post('/add-inventory',
-  // optional server-side validation middleware - e.g. invValidate.inventoryRules()
-  utilities.handleErrors(invController.addInventory)
-);
 
+// POST /inv/add-inventory -> submit new vehicle
+router.post('/add-inventory', utilities.handleErrors(invController.addInventory));
 
-// Vehicle detail view
+// GET /inv/detail/:inv_id -> vehicle detail
 router.get('/detail/:inv_id', utilities.handleErrors(invController.buildDetailView));
 
-module.exports = router;
+// Friendly route: GET /inv/type/:type or :classificationId used by your nav
+// If your controller expects an id param named "type", we use that (matches your controller)
 router.get('/type/:type', utilities.handleErrors(invController.getVehiclesByType));
+
+// If you still need the numeric id route (some templates use classificationId param)
+router.get('/type/id/:classificationId', utilities.handleErrors(async (req, res, next) => {
+  // If you want to support numeric id, reuse getVehiclesByType by mapping param name
+  req.params.type = req.params.classificationId;
+  return invController.getVehiclesByType(req, res, next);
+}));
+
+module.exports = router;

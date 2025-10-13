@@ -1,19 +1,14 @@
 /* ******************************************
-app.set("view engine", "ejs");
-app.use(expressLayouts);
-app.set("layout", "layouts/layout"); // Remove the ./ prefix
-
-const { errorHandler } = require('./middleware/error-handler')
-// Error handling middleware - this must be the last middleware used
-app.use(errorHandler)This server.js file is the primary file of the 
+ * This server.js file is the primary file of the 
  * application. It is used to control the project.
  *******************************************/
+
 /* ***********************
  * Require Statements
  *************************/
 const express = require("express");
 const expressLayouts = require("express-ejs-layouts");
-const cookieParser = require("cookie-parser");            // ← declared once
+const cookieParser = require("cookie-parser");
 require("dotenv").config();
 const app = express();
 const static = require("./routes/static");
@@ -22,7 +17,7 @@ const miscRouter = require('./routes/misc');
 const accountRoutes = require('./routes/account');
 const reviewRoutes = require('./routes/review');
 const categoryRoutes = require('./routes/categories');
-const pool = require('./database/pool');                  // ← assigned so setup route can use pool.query
+const pool = require('./database/pool');
 const classificationModel = require('./models/classification-model');
 const classificationRouter = require('./routes/classification');
 const session = require('express-session');
@@ -33,43 +28,44 @@ const { checkJwtCookie } = require('./utilities/accountAuth');
 /* ***********************
  * Middleware & View Engine
  *************************/
-app.use(cookieParser());              // use cookie-parser once (before middleware that reads cookies)
+// Cookie parser - must be before any middleware that uses cookies
+app.use(cookieParser());
 
+// Session middleware
 app.use(session({
   secret: process.env.SESSION_SECRET || 'yourSecretKey',
   resave: false,
   saveUninitialized: true,
   name: 'sessionId',
 }));
+
+// Flash messages
 app.use(flash());
 
+// Body parser middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.use(checkJwtCookie);              // middleware that reads JWT from cookie and sets res.locals
+// JWT Check middleware - runs on every request
+app.use(checkJwtCookie);
 
 /* ***********************
  * View Engine and Templates
  *************************/
 app.set("view engine", "ejs");
 app.use(expressLayouts);
-app.set("layout", "layouts/layout"); // Remove the "./" prefix
+app.set("layout", "layouts/layout");
 
-// Serve favicon.ico from the public/images/site directory
+/* ***********************
+ * Favicon
+ *************************/
 app.get('/favicon.ico', (req, res) => {
   res.sendFile(__dirname + '/public/images/site/favicon-32x32.png');
 });
 
-// Make JWT-check middleware available app-wide if you also export it from utilities
-// (If utilities.checkJWTToken is a different function you want to use, you can keep it.)
-// app.use(utilities.checkJWTToken);
-
 /* ***********************
- * Load classifications for header (or navigation)
+ * Load classifications for navigation
  *************************/
-
-// Middleware to set navigation HTML for all views
-// Removed duplicate require of utilities
 app.use(async (req, res, next) => {
   try {
     const classifications = await classificationModel.getClassifications();
@@ -103,7 +99,7 @@ app.use('/account', accountRoutes);
 
 // Inventory routes
 app.use('/inv', inventoryRoutes);
-app.use('/inventory', inventoryRoutes); // for detail pages (public access)
+app.use('/inventory', inventoryRoutes);
 
 // Category and main navigation routes
 app.use('/', categoryRoutes);
@@ -117,7 +113,7 @@ app.use(miscRouter);
 // Classification routes
 app.use('/classification', classificationRouter);
 
-// Root route to render index.ejs with a title
+// Root route
 app.get('/', (req, res) => {
   res.locals.active = 'home';
   res.render('index', { title: 'Home' });
@@ -129,7 +125,6 @@ app.get('/setup-db', async (req, res) => {
     const fs = require('fs');
     const path = require('path');
     
-    // Read and execute SQL files
     const sql1 = fs.readFileSync(path.join(__dirname, 'database/assignment2.sql'), 'utf8');
     const sql2 = fs.readFileSync(path.join(__dirname, 'database/reviews.sql'), 'utf8');
     
@@ -142,6 +137,9 @@ app.get('/setup-db', async (req, res) => {
   }
 });
 
+/* ***********************
+ * Error Handlers
+ *************************/
 // 404 handler
 app.use((req, res, next) => {
   const err = new Error(`Not Found: ${req.originalUrl}`);
@@ -162,13 +160,12 @@ app.use((err, req, res, next) => {
 
 /* ***********************
  * Local Server Information
- * Values from .env (environment) file
  *************************/
 const port = process.env.PORT || 5500;
 const host = process.env.HOST || 'localhost';
 
 /* ***********************
- * Log statement to confirm server operation
+ * Start Server
  *************************/
 app.listen(port, () => {
   console.log(`app listening on ${host}:${port}`);
