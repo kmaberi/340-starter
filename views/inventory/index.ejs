@@ -1,7 +1,4 @@
-<%- include('../partials/head') %>
-
-<body>
-  <%- include('../partials/hea                  <span class="spec"><i class="spec-icon">🛣️</i> <%= vehicle.inv_miles.toLocaleString() %> miles</span>
+<%- include('../partials/hea                  <span class="spec"><i class="spec-icon">🛣️</i> <%= vehicle.inv_miles.toLocaleString() %> miles</span>
                   <span class="spec"><i class="spec-icon">💰</i> $<%= vehicle.inv_price.toLocaleString() %></span>
                   <div class="vehicle-description">
                     <%= vehicle.inv_description %>
@@ -15,19 +12,13 @@
         <% } %>
       </div>
     </section>
-  </main>
-
-  <%- include('../partials/footer') %>
-</body>
-</html>r') %>
-  
+  r') %>
   <main class="container">
     <section class="inventory-showcase">
       <header class="page-header">
         <h1>Vehicle Inventory</h1>
         <p class="header-description">Discover our selection of unique and high-quality vehicles</p>
       </header>
-
       <form class="search-form" action="/inventory/search" method="GET">
         <div class="search-grid">
           <div class="form-group">
@@ -49,7 +40,6 @@
         </div>
         <button type="submit" class="btn btn-primary search-btn">Search Vehicles</button>
       </form>
-
       <h2>Browse by Category</h2>
       <div class="category-grid">
         <a href="/inv/type/1" class="category-card">
@@ -74,7 +64,6 @@
         </a>
       </div>
     </section>
-
     <!-- Featured Vehicles -->
     <section class="featured-vehicles">
       <h2>Featured Vehicles</h2>
@@ -104,7 +93,6 @@
         <% } %>
       </div>
     </section>
-
     <!-- Search Section -->
     <section class="inventory-search">
       <h2>Find Your Perfect Vehicle</h2>
@@ -132,5 +120,3 @@
     </section>
   </div>
 </div>
-
-<%- include('../partials/footer') %>

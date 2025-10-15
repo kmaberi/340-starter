@@ -1,119 +1,89 @@
-<% if (locals.errors) { %>
-  <ul class="notice">
-    <% errors.array().forEach(error => { %>
-      <li><%= error.msg %></li>
-    <% }) %>
-  </ul>
-<% } %>
-<% if (flash.notice) { %>
-  <p class="notice"><%= flash.notice %></p>
+<% layout('layouts/layout') %>
+
+<% if (errors && errors.length > 0) { %>
+  <div class="errors">
+    <% errors.forEach(error => { %>
+      <p class="error"><%= error.msg %></p>
+    <% }); %>
+  </div>
 <% } %>
 
-<div class="update-forms">
-  <div class="form-section">
-    <h2>Update Account Information</h2>
-    <form id="updateAccountForm" action="/account/update" method="post" class="account-form">
-      <input type="hidden" name="account_id" value="<%= account_id %>">
-      
-      <label for="account_firstname">First Name:</label>
-      <input type="text" id="account_firstname" name="account_firstname" required 
-             value="<%= account_firstname %>" placeholder="Enter your first name">
-      
-      <label for="account_lastname">Last Name:</label>
-      <input type="text" id="account_lastname" name="account_lastname" required 
-             value="<%= account_lastname %>" placeholder="Enter your last name">
-      
-      <label for="account_email">Email:</label>
-      <input type="email" id="account_email" name="account_email" required 
-             value="<%= account_email %>" placeholder="Enter your email">
-      
-      <input type="submit" value="Update Account" class="submit-btn">
-    </form>
+<% if (message) { %>
+  <div class="message">
+    <%= message %>
   </div>
+<% } %>
 
-  <div class="form-section">
-    <h2>Change Password</h2>
-    <form id="updatePasswordForm" action="/account/update-password" method="post" class="account-form">
-      <input type="hidden" name="account_id" value="<%= account_id %>">
-      
-      <label for="current_password">Current Password:</label>
-      <input type="password" id="current_password" name="current_password" required 
-             placeholder="Enter your current password">
-      
-      <label for="account_password">New Password:</label>
-      <input type="password" id="account_password" name="account_password" required 
-             pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$"
-             placeholder="Enter new password">
-      <p class="password-info">Password must be at least 12 characters and contain 1 uppercase, 1 lowercase, 1 number and 1 special character</p>
-      
-      <label for="confirm_password">Confirm New Password:</label>
-      <input type="password" id="confirm_password" name="confirm_password" required 
-             placeholder="Confirm new password">
-      
-      <input type="submit" value="Change Password" class="submit-btn">
-    </form>
-  </div>
-</div>
+<h1><%= title %></h1>
+
+<form id="accountUpdateForm" method="post" action="/account/update/account" class="form">
+  <fieldset>
+    <legend>Account Update</legend>
+    <input type="hidden" name="account_id" value="<%= account_id %>">
+    
+    <label for="account_firstname">First Name</label>
+    <input type="text" name="account_firstname" id="account_firstname" value="<%= account_firstname || '' %>" required>
+    
+    <label for="account_lastname">Last Name</label>
+    <input type="text" name="account_lastname" id="account_lastname" value="<%= account_lastname || '' %>" required>
+    
+    <label for="account_email">Email Address</label>
+    <input type="email" name="account_email" id="account_email" value="<%= account_email || '' %>" required>
+    
+    <input type="submit" value="Update Account" class="btn btn-primary">
+  </fieldset>
+</form>
+
+<form id="passwordUpdateForm" method="post" action="/account/update/password" class="form">
+  <fieldset>
+    <legend>Change Password</legend>
+    <input type="hidden" name="account_id" value="<%= account_id %>">
+    
+    <p class="password-info">Password requirements: At least 12 characters with at least 1 capital letter, 1 number and 1 special character.</p>
+    
+    <label for="account_password">New Password</label>
+    <input type="password" name="account_password" id="account_password" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s]).{12,}$" title="Password must contain at least 1 capital letter, 1 lowercase letter, 1 number, 1 special character and be at least 12 characters long" required>
+    
+    <input type="submit" value="Change Password" class="btn btn-secondary">
+  </fieldset>
+</form>
+
+<p><a href="/account/">Back to Account Management</a></p>
 
 <script>
-// Client-side validation for account update
-document.getElementById('updateAccountForm').addEventListener('submit', function(e) {
-  const firstName = document.getElementById('account_firstname').value;
-  const lastName = document.getElementById('account_lastname').value;
-  const email = document.getElementById('account_email').value;
+// Client-side validation
+document.addEventListener('DOMContentLoaded', function() {
+  const accountForm = document.getElementById('accountUpdateForm');
+  const passwordForm = document.getElementById('passwordUpdateForm');
   
-  if (!firstName || !lastName || !email) {
-    e.preventDefault();
-    alert('Please fill in all fields');
-  }
+  accountForm.addEventListener('submit', function(e) {
+    const firstname = document.getElementById('account_firstname').value.trim();
+    const lastname = document.getElementById('account_lastname').value.trim();
+    const email = document.getElementById('account_email').value.trim();
+    
+    if (!firstname || !lastname || !email) {
+      alert('All fields are required.');
+      e.preventDefault();
+      return;
+    }
+    
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email)) {
+      alert('Please enter a valid email address.');
+      e.preventDefault();
+      return;
+    }
+  });
   
-  if (email && !email.includes('@')) {
-    e.preventDefault();
-    alert('Please enter a valid email address');
-  }
-});
-
-// Client-side validation for password update
-document.getElementById('updatePasswordForm').addEventListener('submit', function(e) {
-  const currentPassword = document.getElementById('current_password').value;
-  const newPassword = document.getElementById('account_password').value;
-  const confirmPassword = document.getElementById('confirm_password').value;
-  
-  if (!currentPassword || !newPassword || !confirmPassword) {
-    e.preventDefault();
-    alert('Please fill in all password fields');
-    return;
-  }
-  
-  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$/;
-  if (newPassword && !passwordRegex.test(newPassword)) {
-    e.preventDefault();
-    alert('New password must be at least 12 characters and contain 1 uppercase, 1 lowercase, 1 number and 1 special character');
-    return;
-  }
-  
-  if (newPassword !== confirmPassword) {
-    e.preventDefault();
-    alert('New passwords do not match');
-    return;
-  }
-  
-  if (currentPassword === newPassword) {
-    e.preventDefault();
-    alert('New password must be different from current password');
-    return;
-  }
-});
-
-// Real-time password confirmation check
-document.getElementById('confirm_password').addEventListener('input', function() {
-  const newPassword = document.getElementById('account_password').value;
-  const confirmPassword = this.value;
-  
-  if (confirmPassword && newPassword !== confirmPassword) {
-    this.style.borderColor = '#ef4444';
-  } else if (confirmPassword) {
-    this.style.borderColor = '#10b981';
-  }
+  passwordForm.addEventListener('submit', function(e) {
+    const password = document.getElementById('account_password').value;
+    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s]).{12,}$/;
+    
+    if (!passwordPattern.test(password)) {
+      alert('Password must contain at least 1 capital letter, 1 lowercase letter, 1 number, 1 special character and be at least 12 characters long.');
+      e.preventDefault();
+      return;
+    }
+  });
 });
 </script>

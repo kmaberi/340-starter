@@ -1,5 +1,5 @@
 // scripts/check-db.js
-const pool = require('../database/pool');
+const { pool } = require('../database');
 
 (async () => {
   try {
@@ -14,8 +14,3 @@ const pool = require('../database/pool');
     await pool.end();
   }
 })();
-// server.js
-/* ************************
- *  Import Dependencies *
- *************************/
-require('dotenv').config(); // Load environment variables from .env file            

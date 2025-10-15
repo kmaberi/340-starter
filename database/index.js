@@ -1,39 +1,29 @@
-const { Pool } = require("pg")
-require("dotenv").config()
+// database/index.js
+const { Pool } = require('pg');
+require('dotenv').config();
 
-/* ***************
- * Connection Pool
- * SSL Object needed for local testing of app
- * But will cause problems in production environment
- * If - else will make determination which to use
- * *************** */
-let pool
-if (process.env.NODE_ENV == "development") {
-  pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: {
-      rejectUnauthorized: false
-    }
-  })
-} else {
-  pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: {
-      rejectUnauthorized: false
-    }
-  })
+const connectionString = process.env.DATABASE_URL;
+const useSsl = process.env.DB_SSL === 'true' || false;
+
+const pool = new Pool({
+  connectionString,
+  ssl: useSsl ? { rejectUnauthorized: false } : false,
+});
+
+// helper wrapper that logs queries (keeps pool API available too)
+async function query(text, params) {
+  try {
+    const res = await pool.query(text, params);
+    console.log('executed query', { text });
+    return res;
+  } catch (error) {
+    console.error('error in query', { text });
+    throw error;
+  }
 }
 
-// Added for troubleshooting queries
+// export both the query helper and the raw pool
 module.exports = {
-  async query(text, params) {
-    try {
-      const res = await pool.query(text, params)
-      console.log("executed query", { text })
-      return res
-    } catch (error) {
-      console.error("error in query", { text })
-      throw error
-    }
-  },
-}
+  query,
+  pool,
+};

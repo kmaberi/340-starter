@@ -1,172 +1,150 @@
-/* ******************************************
- * This server.js file is the primary file of the 
- * application. It is used to control the project.
- *******************************************/
+// server.js
+require('dotenv').config();
 
-/* ***********************
- * Require Statements
- *************************/
-const express = require("express");
-const expressLayouts = require("express-ejs-layouts");
-const cookieParser = require("cookie-parser");
-require("dotenv").config();
-const app = express();
-const static = require("./routes/static");
-const inventoryRoutes = require('./routes/inventory');
-const miscRouter = require('./routes/misc');
-const accountRoutes = require('./routes/account');
-const reviewRoutes = require('./routes/review');
-const categoryRoutes = require('./routes/categories');
-const pool = require('./database/pool');
-const classificationModel = require('./models/classification-model');
-const classificationRouter = require('./routes/classification');
+const express = require('express');
+const path = require('path');
+const expressLayouts = require('express-ejs-layouts');
+const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const flash = require('connect-flash');
-const utilities = require('./utilities/');
-const { checkJwtCookie } = require('./utilities/accountAuth');
+const expressMessages = require('express-messages');
+const { pool } = require('./database');
 
-/* ***********************
- * Middleware & View Engine
- *************************/
-// Cookie parser - must be before any middleware that uses cookies
-app.use(cookieParser());
+let utilities;
+try {
+  utilities = require('./utilities'); // your utilities/index.js
+  console.log('utilities loaded');
+} catch (err) {
+  console.warn('Warning: ./utilities failed to load:', err.message);
+  // provide fallbacks so server still starts
+  utilities = {
+    checkJWTToken: (req, res, next) => next(),
+    getNav: async () => '',
+  };
+}
 
-// Session middleware
-app.use(session({
-  secret: process.env.SESSION_SECRET || 'yourSecretKey',
-  resave: false,
-  saveUninitialized: true,
-  name: 'sessionId',
-}));
+const app = express();
 
-// Flash messages
-app.use(flash());
+// Settings
+const PORT = process.env.PORT || 5500;
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
+app.use(expressLayouts);
+app.set('layout', 'layouts/layout'); // expects views/layouts/layout.ejs
 
-// Body parser middleware
+// Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-
-// JWT Check middleware - runs on every request
-app.use(checkJwtCookie);
-
-/* ***********************
- * View Engine and Templates
- *************************/
-app.set("view engine", "ejs");
-app.use(expressLayouts);
-app.set("layout", "layouts/layout");
-
-/* ***********************
- * Favicon
- *************************/
-app.get('/favicon.ico', (req, res) => {
-  res.sendFile(__dirname + '/public/images/site/favicon-32x32.png');
+app.use(cookieParser());
+app.use(
+  session({
+    store: new (require('connect-pg-simple')(session))({
+      createTableIfMissing: true,
+      pool,
+    }),
+    secret: process.env.SESSION_SECRET || 'devSecret',
+    resave: true, // needed for flash messages
+    saveUninitialized: true,
+    name: 'sessionId',
+    cookie: {
+      maxAge: 1000 * 60 * 60, // 1 hour
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production'
+    },
+  })
+);
+app.use(flash());
+// Express Messages middleware (rendered via <%- messages() %>)
+app.use(function (req, res, next) {
+  res.locals.messages = expressMessages(req, res);
+  next();
 });
 
-/* ***********************
- * Load classifications for navigation
- *************************/
+// static files
+app.use(express.static(path.join(__dirname, 'public')));
+
+// local variables available to all views
+app.use((req, res, next) => {
+  res.locals.flash = req.flash();
+  res.locals.loggedin = 0;
+  res.locals.accountData = null;
+  next();
+});
+
+// JWT check middleware (utilities.checkJWTToken should set res.locals.loggedin/accountData)
+app.use(utilities.checkJWTToken);
+
+// Build nav HTML for every request and attach to res.locals.nav
 app.use(async (req, res, next) => {
   try {
-    const classifications = await classificationModel.getClassifications();
-    res.locals.classifications = classifications;
-    res.locals.active = '';
-    res.locals.flash = req.flash();
     res.locals.nav = await utilities.getNav();
-    next();
   } catch (err) {
-    console.error("Error loading classifications:", err);
-    res.locals.classifications = [];
-    res.locals.active = '';
-    res.locals.flash = req.flash();
-    res.locals.nav = '<ul><li><a href="/">Home</a></li></ul>';
-    next();
+    console.error('Error building nav:', err);
+    res.locals.nav = '';
   }
+  next();
 });
 
-/* ***********************
- * Static Files
- *************************/
-app.use(express.static('public'));
-
-/* ***********************
- * Routes
- *************************/
-app.use(static);
-
-// Account routes
-app.use('/account', accountRoutes);
-
-// Inventory routes
-app.use('/inv', inventoryRoutes);
-app.use('/inventory', inventoryRoutes);
-
-// Category and main navigation routes
-app.use('/', categoryRoutes);
-
-// Review routes
-app.use('/review', reviewRoutes);
-
-// Misc routes
-app.use(miscRouter);
-
-// Classification routes
-app.use('/classification', classificationRouter);
-
-// Root route
-app.get('/', (req, res) => {
-  res.locals.active = 'home';
-  res.render('index', { title: 'Home' });
-});
-
-// Temporary setup route - REMOVE AFTER USE
-app.get('/setup-db', async (req, res) => {
+// Safe route require helper
+function tryRequireRoute(routePath) {
   try {
-    const fs = require('fs');
-    const path = require('path');
-    
-    const sql1 = fs.readFileSync(path.join(__dirname, 'database/assignment2.sql'), 'utf8');
-    const sql2 = fs.readFileSync(path.join(__dirname, 'database/reviews.sql'), 'utf8');
-    
-    await pool.query(sql1);
-    await pool.query(sql2);
-    
-    res.send('Database setup complete! Remove this route now.');
-  } catch (error) {
-    res.send('Setup failed: ' + error.message);
+    return require(routePath);
+  } catch (err) {
+    console.warn(`Route ${routePath} not loaded:`, err.message);
+    return null;
   }
-});
+}
 
-/* ***********************
- * Error Handlers
- *************************/
+// Routes
+const indexRouter = tryRequireRoute('./routes/index') || (function () {
+  const r = require('express').Router();
+  r.get('/', (req, res) => res.render('index', { title: 'CSE Motors' }));
+  return r;
+})();
+
+app.use('/', indexRouter);
+
+const inventoryRouter = tryRequireRoute('./routes/inventory');
+if (inventoryRouter) app.use('/inv', inventoryRouter);
+
+const accountRouter = tryRequireRoute('./routes/account');
+if (accountRouter) app.use('/account', accountRouter);
+
+const miscRouter = tryRequireRoute('./routes/misc');
+if (miscRouter) app.use('/', miscRouter);
+
+// health endpoint
+app.get('/health', (req, res) => res.json({ ok: true }));
+
 // 404 handler
-app.use((req, res, next) => {
-  const err = new Error(`Not Found: ${req.originalUrl}`);
-  err.status = 404;
-  next(err);
-});
-
-// General error handler
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(err.status || 500);
-  res.render('error', {
-    title: `${err.status || 500} – Error`,
-    message: err.message,
-    error: process.env.NODE_ENV === 'development' ? err : {}
+app.use((req, res) => {
+  res.status(404);
+  const notFoundError = new Error('Page not found');
+  notFoundError.status = 404;
+  // Pass an error object so the error view can safely read error.stack
+  return res.render('error', {
+    title: 'Page not found',
+    message: 'Page not found',
+    error: notFoundError,
+    nav: res.locals.nav // optional if you want nav in the error view
   });
 });
 
-/* ***********************
- * Local Server Information
- *************************/
-const port = process.env.PORT || 5500;
-const host = process.env.HOST || 'localhost';
 
-/* ***********************
- * Start Server
- *************************/
-app.listen(port, () => {
-  console.log(`app listening on ${host}:${port}`);
+// global error handler
+app.use((err, req, res, next) => {
+  console.error('Unhandled error:', err && err.stack ? err.stack : err);
+  res.status(err.status || 500);
+  return res.render('error', {
+    title: `${err.status || 500} - Error`,
+    message: err.message || 'Internal Server Error',
+    error: err,
+    nav: res.locals.nav
+  });
+});
+
+
+// Start
+app.listen(PORT, () => {
+  console.log(`app listening on http://localhost:${PORT}`);
 });

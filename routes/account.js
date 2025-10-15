@@ -1,78 +1,36 @@
 // routes/account.js
 const express = require('express');
 const router = express.Router();
-
+const accountController = require('../controllers/account-controller');
+const validate = require('../utilities/account-validation');
 const utilities = require('../utilities');
-const accountController = require('../controllers/account-controller'); // matches controllers/account-controller.js
-const regValidate = require('../utilities/account-validation');
 
-/* ---------------------------
-   Public pages
-   --------------------------- */
+// deliver account management - protected route (requires login)
+router.get('/', utilities.checkLogin, utilities.handleErrors(accountController.buildAccountManagement));
 
-// Login page
-router.get('/login', utilities.handleErrors(accountController.buildLogin));
-
-// Registration page
+// register / login pages
 router.get('/register', utilities.handleErrors(accountController.buildRegister));
-
-// Process the registration data
 router.post(
   '/register',
-  regValidate.registrationRules(),
-  regValidate.checkRegData,
+  validate.registrationRules(),
+  validate.checkRegData,
   utilities.handleErrors(accountController.registerAccount)
 );
 
-
-// Process login
+router.get('/login', utilities.handleErrors(accountController.buildLogin));
 router.post(
   '/login',
-  regValidate.loginRules(),
-  regValidate.checkLoginData,
+  validate.loginRules(),
+  validate.checkLoginData,
   utilities.handleErrors(accountController.accountLogin)
 );
 
-/* ---------------------------
-   Protected pages (require login)
-   --------------------------- */
+// account update / password (require login)
+router.get('/update/:account_id', utilities.checkJWTToken, utilities.handleErrors(accountController.buildAccountUpdate));
+router.post('/update/account', utilities.checkJWTToken, validate.updateAccountRules(), validate.checkUpdateData, utilities.handleErrors(accountController.updateAccount));
+router.post('/update/password', utilities.checkJWTToken, validate.updatePasswordRules(), validate.checkPasswordData, utilities.handleErrors(accountController.updatePassword));
 
-// Account management (dashboard)
-router.get(
-  '/',
-  utilities.checkLogin,
-  utilities.handleErrors(accountController.buildAccountManagement)
-);
-
-// Build update view for a specific account
-router.get(
-  '/update/:account_id',
-  utilities.checkLogin,
-  utilities.handleErrors(accountController.buildUpdateView)
-);
-
-// Process account update
-router.post(
-  '/update',
-  utilities.checkLogin,
-  regValidate.updateAccountRules(),
-  regValidate.checkUpdateData,
-  utilities.handleErrors(accountController.updateAccount)
-);
-
-// Process password update
-router.post(
-  '/update-password',
-  utilities.checkLogin,
-  regValidate.updatePasswordRules(),
-  regValidate.checkPasswordData,
-  utilities.handleErrors(accountController.updatePassword)
-);
-
-// Logout
-router.get(
-  '/logout',
-  utilities.handleErrors(accountController.accountLogout)
-);
+// logout
+router.get('/logout', utilities.handleErrors(accountController.accountLogout));
 
 module.exports = router;

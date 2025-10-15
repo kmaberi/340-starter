@@ -1,7 +1,5 @@
 <%- include('../partials/header', { title }) %>
-
 <h1><%= title %></h1>
-
 <% if (!grid || grid.length === 0) { %>
   <p>No vehicles found in this category.</p>
 <% } else { %>
@@ -12,7 +10,6 @@
         <img src="/images/vehicles/<%= vehicle.inv_image.replace('/images/vehicles/', '') %>" 
              alt="<%= vehicle.inv_make %> <%= vehicle.inv_model %>" 
              class="vehicle-img" />
-
         <div class="vehicle-info">
           <h2><%= vehicle.inv_make %> <%= vehicle.inv_model %></h2>
           <p>Year: <%= vehicle.inv_year %></p>
@@ -25,5 +22,3 @@
     <% }) %>
   </div>
 <% } %>
-
-<%- include('../partials/footer') %>

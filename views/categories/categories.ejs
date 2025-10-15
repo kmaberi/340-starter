@@ -1,16 +1,8 @@
-<%- include('../partials/head') %>
-
-<body>
-  <%- include('../partials/header') %>
-  <%- include('../partials/navigationpartial') %>
-
-  <main class="container">
+<main class="container">
     <h1><%= title %></h1>
-
     <% if (locals.message) { %>
       <p class="notice"><%= message %></p>
     <% } %>
-
     <div class="categories-grid">
       <% if (locals.classifications && classifications.length > 0) { %>
         <% classifications.forEach(classification => { %>
@@ -25,8 +17,3 @@
         <p class="notice">No categories available.</p>
       <% } %>
     </div>
-  </main>
-
-  <%- include('../partials/footer') %>
-</body>
-</html>

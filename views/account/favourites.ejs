@@ -1,9 +1,5 @@
 <!-- views/account/favorites.ejs -->
-<%- include('../partials/header') %>
-
-<main class="container">
   <h1>My Favorites</h1>
-
   <% if (vehicles && vehicles.length > 0) { %>
     <ul id="inv-display">
       <% vehicles.forEach(vehicle => { %>
@@ -24,8 +20,6 @@
   <% } else { %>
     <p class="notice">You don't have any favorites yet.</p>
   <% } %>
-</main>
-
 <script>
 document.addEventListener('click', async (e) => {
   if (e.target.matches('.remove-fav-btn')) {
@@ -40,5 +34,3 @@ document.addEventListener('click', async (e) => {
   }
 });
 </script>
-
-<%- include('../partials/footer') %>

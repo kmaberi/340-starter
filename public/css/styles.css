@@ -147,3 +147,20 @@ header {
     justify-content: flex-end;
   }   
 }
+
+/* --------- Forms & Validation --------- */
+form fieldset { border: 0; padding: 0; margin: 0; }
+label { display: block; font-weight: 600; margin-top: 1rem; }
+input, select, textarea, button {
+  font: inherit;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  outline: none;
+}
+input:focus, select:focus, textarea:focus { box-shadow: 0 0 0 3px rgba(11, 120, 209, 0.2); border-color: var(--accent); }
+input:required:invalid, textarea:required:invalid, select:required:invalid { border-color: #dc2626; background-color: #fff7f7; }
+input:required:valid, textarea:required:valid, select:required:valid { border-color: #16a34a; background-color: #f0fff4; }
+.hint { color: var(--muted); font-size: 0.9rem; margin-bottom: 0.25rem; }
+.notice { color: #b91c1c; background: #fee2e2; padding: 0.75rem 1rem; border-radius: 8px; }
+.notice li { margin-left: 1rem; }
