@@ -2,11 +2,62 @@
   <h1><%= title %></h1>
 <% } %>
 
-<div class="vehicle-detail-main">
+<section class="vehicle-detail-main">
   <div class="vehicle-detail-responsive">
     <%- vehicleDetailHTML %>
   </div>
-</div>
+
+  <!-- Reviews Section -->
+  <div class="reviews-section">
+    <div class="reviews-header">
+      <h2>Reviews</h2>
+      <div class="review-actions">
+        <% if (locals.accountData) { %>
+          <a href="/review/add/<%= vehicle.inv_id %>" class="btn">Write a Review</a>
+        <% } else { %>
+          <div class="login-prompt">
+            <a href="/account/login">Login</a> to write a review
+          </div>
+        <% } %>
+      </div>
+    </div>
+
+    <!-- Individual Reviews -->
+    <div class="reviews-list">
+      <% if (typeof reviews !== 'undefined' && reviews && reviews.length > 0) { %>
+        <% reviews.forEach(review => { %>
+          <div class="review-item">
+            <div class="review-header">
+              <div class="reviewer-info">
+                <h4><%= review.review_title %></h4>
+                <div class="reviewer-meta">
+                  <span class="reviewer-name">by <%= review.account_firstname %> <%= review.account_lastname %></span>
+                  <span class="review-date"><%= new Date(review.review_date).toLocaleDateString() %></span>
+                </div>
+              </div>
+              <div class="review-rating">
+                <% for (let i = 1; i <= 5; i++) { %>
+                  <span class="star <%= i <= review.review_rating ? 'filled' : '' %>">⭐</span>
+                <% } %>
+              </div>
+            </div>
+            <div class="review-content">
+              <p><%= review.review_text %></p>
+            </div>
+          </div>
+        <% }) %>
+      <% } else { %>
+        <div class="no-reviews">
+          <h3>No Reviews Yet</h3>
+          <p>Be the first to review this vehicle!</p>
+          <% if (locals.accountData) { %>
+            <a href="/review/add/<%= vehicle.inv_id %>" class="btn">Write the First Review</a>
+          <% } %>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</section>
 
 <style>
 .vehicle-detail-main {
