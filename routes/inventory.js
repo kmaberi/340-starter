@@ -15,7 +15,7 @@ router.get('/management', utilities.checkJWTToken, utilities.checkAccountType, u
 router.get('/add-classification', utilities.checkJWTToken, utilities.checkAccountType, utilities.handleErrors(invController.addClassificationView));
 
 // POST /inv/add-classification -> submit new classification - PROTECTED
-router.post('/add-classification', utilities.checkJWTToken, utilities.checkAccountType, utilities.handleErrors(invController.addClassification));
+router.post('/add-classification', utilities.checkJWTToken, utilities.checkAccountType, invValidate.classificationRules(), invValidate.checkClassData, utilities.handleErrors(invController.addClassification));
 
 // GET /inv/add-inventory -> form to add a vehicle - PROTECTED
 router.get('/add-inventory', utilities.checkJWTToken, utilities.checkAccountType, utilities.handleErrors(invController.addInventoryView));

@@ -7,14 +7,13 @@ const validate = {}
  * ********************************* */
 validate.classificationRules = () => {
   return [
-    // classification name is required and must be string with no spaces or special characters
+    // classification name is required and must have no spaces or special characters (letters and numbers only)
     body("classification_name")
       .trim()
       .escape()
       .notEmpty()
-      .isLength({ min: 1 })
-      .isAlpha()
-      .withMessage("Please provide a valid classification name with only alphabetic characters."),
+      .matches(/^[A-Za-z0-9]+$/)
+      .withMessage("Classification name must contain only letters and numbers (no spaces or special characters)."),
   ]
 }
 

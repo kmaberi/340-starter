@@ -128,7 +128,7 @@ header {
   background: var(--accent-50);
 }
 
-@media (max-widt=768px) {
+@media (max-width: 768px) {
   .header-content {
     flex-direction: column;
     align-items: flex-start;
@@ -162,5 +162,291 @@ input:focus, select:focus, textarea:focus { box-shadow: 0 0 0 3px rgba(11, 120, 
 input:required:invalid, textarea:required:invalid, select:required:invalid { border-color: #dc2626; background-color: #fff7f7; }
 input:required:valid, textarea:required:valid, select:required:valid { border-color: #16a34a; background-color: #f0fff4; }
 .hint { color: var(--muted); font-size: 0.9rem; margin-bottom: 0.25rem; }
-.notice { color: #b91c1c; background: #fee2e2; padding: 0.75rem 1rem; border-radius: 8px; }
-.notice li { margin-left: 1rem; }
+
+/* --------- Messages & Errors --------- */
+.message, .notice, .flash-message {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  border-left: 4px solid;
+}
+
+.message {
+  background: #dbeafe;
+  color: #1e40af;
+  border-left-color: #3b82f6;
+}
+
+.notice, .error {
+  background: #fee2e2;
+  color: #b91c1c;
+  border-left-color: #dc2626;
+}
+
+.errors {
+  background: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fca5a5;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.errors ul {
+  margin: 0;
+  padding-left: 1.5rem;
+}
+
+.errors li {
+  margin-bottom: 0.25rem;
+}
+
+/* --------- Form Layout --------- */
+form {
+  background: var(--card);
+  padding: 1.5rem;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 2rem;
+}
+
+fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+
+legend {
+  font-weight: 600;
+  font-size: 1.125rem;
+  color: var(--heading);
+  margin-bottom: 1rem;
+}
+
+label {
+  display: block;
+  font-weight: 600;
+  margin-top: 1rem;
+  margin-bottom: 0.25rem;
+  color: var(--heading);
+}
+
+input, select, textarea {
+  width: 100%;
+  font: inherit;
+  padding: 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  outline: none;
+  background: #fff;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input:focus, select:focus, textarea:focus {
+  box-shadow: 0 0 0 3px rgba(11, 120, 209, 0.2);
+  border-color: var(--accent);
+}
+
+input:required:invalid:not(:focus), textarea:required:invalid:not(:focus), select:required:invalid:not(:focus) {
+  border-color: #dc2626;
+  background-color: #fffbfb;
+}
+
+input:required:valid, textarea:required:valid, select:required:valid {
+  border-color: #16a34a;
+}
+
+button, .btn {
+  background: var(--accent);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-top: 1rem;
+}
+
+button:hover, .btn:hover {
+  background: var(--accent-700);
+}
+
+button:disabled, .btn:disabled {
+  background: var(--muted);
+  cursor: not-allowed;
+}
+
+/* --------- Responsive Design --------- */
+@media (max-width: 768px) {
+  form {
+    padding: 1rem;
+  }
+  
+  input, select, textarea, button {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+}
+
+/* --------- Inventory Management --------- */
+.inventory-management {
+  background: var(--card);
+  padding: 1.5rem;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 2rem;
+}
+
+.inventory-management h1 {
+  color: var(--heading);
+  margin-bottom: 1rem;
+}
+
+.inventory-management ul {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+}
+
+.inventory-management li {
+  margin-bottom: 0.5rem;
+}
+
+.inventory-management a {
+  display: inline-block;
+  padding: 0.75rem 1.25rem;
+  background: var(--accent);
+  color: white;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.inventory-management a:hover {
+  background: var(--accent-700);
+}
+
+.classification-select {
+  margin: 1rem 0;
+}
+
+.classification-select select {
+  min-width: 250px;
+}
+
+/* --------- Inventory Grid --------- */
+#inv-display {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  list-style: none;
+  padding: 0;
+  margin: 2rem 0;
+}
+
+#inv-display li {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+#inv-display li:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+#inv-display img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.namePrice {
+  padding: 1rem;
+}
+
+.namePrice hr {
+  margin: 0.5rem 0;
+  border: none;
+  height: 1px;
+  background: var(--border-color);
+}
+
+.namePrice h2 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.125rem;
+  color: var(--heading);
+}
+
+.namePrice h2 a {
+  color: var(--accent);
+  transition: color 0.2s;
+}
+
+.namePrice h2 a:hover {
+  color: var(--accent-700);
+}
+
+.namePrice span {
+  font-weight: 600;
+  color: var(--heading);
+  font-size: 1.1rem;
+}
+
+/* --------- Inventory Table --------- */
+#inventoryDisplay {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--card);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  margin: 1rem 0;
+}
+
+#inventoryDisplay th,
+#inventoryDisplay td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+}
+
+#inventoryDisplay th {
+  background: var(--accent-50);
+  font-weight: 600;
+  color: var(--heading);
+}
+
+#inventoryDisplay tbody tr:hover {
+  background: var(--bg);
+}
+
+#inventoryDisplay a {
+  color: var(--accent);
+  font-weight: 500;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+#inventoryDisplay a:hover {
+  background: var(--accent-50);
+}
+
+/* --------- Utility Classes --------- */
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--container-pad);
+}
+
+.text-center { text-align: center; }
+.text-muted { color: var(--muted); }
+.mb-0 { margin-bottom: 0; }
+.mb-1 { margin-bottom: 0.5rem; }
+.mb-2 { margin-bottom: 1rem; }
+.mt-0 { margin-top: 0; }
+.mt-1 { margin-top: 0.5rem; }
+.mt-2 { margin-top: 1rem; }

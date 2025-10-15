@@ -158,6 +158,7 @@ exports.addClassificationView = async (req, res, next) => {
     res.render('inventory/add-classification', {
       title: 'Add Classification',
       message: req.flash ? req.flash('message') : null,
+      errors: null,
       classification_name: '',
       nav: await utilities.getNav(),
     });
@@ -169,16 +170,8 @@ exports.addClassificationView = async (req, res, next) => {
 // Add Classification (POST)
 exports.addClassification = async (req, res, next) => {
   try {
-    let classification_name = req.body.classification_name ? req.body.classification_name.trim() : '';
-    if (!classification_name || !/^[A-Za-z0-9]+$/.test(classification_name)) {
-      req.flash('message', 'Classification name required and must not contain spaces or special characters.');
-      return res.status(400).render('inventory/add-classification', {
-        title: 'Add Classification',
-        message: req.flash('message'),
-        classification_name,
-        nav: await utilities.getNav(),
-      });
-    }
+    let { classification_name } = req.body;
+    classification_name = classification_name ? classification_name.trim() : '';
 
     const result = await classificationModel.insertClassification(classification_name);
     if (result && (result.rowCount === 1 || result.affectedRows === 1 || result.id || result.classification_id)) {
@@ -189,6 +182,7 @@ exports.addClassification = async (req, res, next) => {
       return res.status(500).render('inventory/add-classification', {
         title: 'Add Classification',
         message: req.flash('message'),
+        errors: null,
         classification_name,
         nav: await utilities.getNav(),
       });
@@ -205,9 +199,10 @@ exports.addInventoryView = async (req, res, next) => {
     res.render('inventory/add-inventory', {
       title: 'Add Inventory',
       message: req.flash ? req.flash('message') : null,
+      errors: null,
       classificationList,
       classification_id: '', inv_make: '', inv_model: '', inv_year: '', inv_description: '',
-      inv_image: '', inv_thumbnail: '', inv_price: '', inv_miles: '', inv_color: '',
+      inv_image: '/images/vehicles/no-image.png', inv_thumbnail: '/images/vehicles/no-image-tn.png', inv_price: '', inv_miles: '', inv_color: '',
       nav: await utilities.getNav(),
     });
   } catch (err) {
@@ -228,34 +223,11 @@ exports.addInventory = async (req, res, next) => {
     inv_model = inv_model ? inv_model.trim() : '';
     inv_year = inv_year ? inv_year.trim() : '';
     inv_description = inv_description ? inv_description.trim() : '';
-    inv_image = inv_image ? inv_image.trim() : '/images/vehicles/no-image-available.jpg';
-    inv_thumbnail = inv_thumbnail ? inv_thumbnail.trim() : '/images/vehicles/no-image-available-tn.jpg';
+    inv_image = inv_image ? inv_image.trim() : '/images/vehicles/no-image.png';
+    inv_thumbnail = inv_thumbnail ? inv_thumbnail.trim() : '/images/vehicles/no-image-tn.png';
     inv_price = inv_price ? inv_price.trim() : '';
     inv_miles = inv_miles ? inv_miles.trim() : '';
     inv_color = inv_color ? inv_color.trim() : '';
-
-    const errors = [];
-    if (!classification_id) errors.push('Classification is required.');
-    if (!inv_make) errors.push('Make is required.');
-    if (!inv_model) errors.push('Model is required.');
-    if (!inv_year || !validator.isInt(inv_year, { min: 1900, max: 2099 })) errors.push('Year must be a valid 4-digit year.');
-    if (!inv_description) errors.push('Description is required.');
-    if (!inv_price || !validator.isFloat(String(inv_price))) errors.push('Price must be a number.');
-    if (!inv_miles || !validator.isInt(String(inv_miles))) errors.push('Miles must be a number.');
-    if (!inv_color) errors.push('Color is required.');
-
-    if (errors.length > 0) {
-      const classificationList = await utilities.buildClassificationList(classification_id);
-      req.flash('message', errors.join(' '));
-      return res.status(400).render('inventory/add-inventory', {
-        title: 'Add Inventory',
-        message: req.flash('message'),
-        classificationList,
-        classification_id, inv_make, inv_model, inv_year, inv_description,
-        inv_image, inv_thumbnail, inv_price, inv_miles, inv_color,
-        nav: await utilities.getNav(),
-      });
-    }
 
     const result = await inventoryModel.addInventoryItem({
       classification_id, inv_make, inv_model, inv_year, inv_description,
@@ -271,6 +243,7 @@ exports.addInventory = async (req, res, next) => {
       return res.status(500).render('inventory/add-inventory', {
         title: 'Add Inventory',
         message: req.flash('message'),
+        errors: null,
         classificationList,
         classification_id, inv_make, inv_model, inv_year, inv_description,
         inv_image, inv_thumbnail, inv_price, inv_miles, inv_color,

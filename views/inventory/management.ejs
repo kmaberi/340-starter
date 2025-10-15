@@ -1,27 +1,35 @@
 
-
-<main class="container">
+<div class="inventory-management">
   <h1>Inventory Management</h1>
 
   <% if (message) { %>
-    <div class="message"><%= message %></div>
+    <div class="message"><%= Array.isArray(message) ? message.join(' ') : message %></div>
   <% } %>
 
-  <ul>
-    <li><a href="/inv/add-classification">Add Classification</a></li>
-    <li><a href="/inv/add-inventory">Add Inventory</a></li>
-  </ul>
+  <section class="management-actions">
+    <h2>Add New Items</h2>
+    <ul>
+      <li><a href="/inv/add-classification">Add New Classification</a></li>
+      <li><a href="/inv/add-inventory">Add New Vehicle</a></li>
+    </ul>
+  </section>
 
-  <h2>Manage Inventory</h2>
-  <p>Select a classification to see its vehicles.</p>
+  <section class="manage-existing">
+    <h2>Manage Existing Inventory</h2>
+    <p>Choose a classification to see its vehicles and manage them.</p>
+    
+    <div class="classification-select">
+      <label for="classificationList">Classification:</label>
+      <%- classificationList %>
+    </div>
 
-  <div class="classification-select">
-    <%- classificationList %>
-  </div>
+    <table id="inventoryDisplay"></table>
+    <noscript>
+      <div class="notice">
+        JavaScript must be enabled to use the inventory management features.
+      </div>
+    </noscript>
+  </section>
+</div>
 
-  <table id="inventoryDisplay"></table>
-  <noscript>JavaScript must be enabled to use this page.</noscript>
-</main>
-
-<script src="../../js/inventory.js"></script>
-
+<script src="/js/inventory.js"></script>

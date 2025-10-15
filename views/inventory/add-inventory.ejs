@@ -4,10 +4,19 @@
   <h1>Add Inventory</h1>
 
   <% if (message) { %>
-    <div class="message"><%= message %></div>
+    <div class="message"><%= Array.isArray(message) ? message.join(' ') : message %></div>
+  <% } %>
+  <% if (typeof errors !== 'undefined' && errors && errors.array && errors.array().length) { %>
+    <div class="errors">
+      <ul>
+        <% errors.array().forEach(function(err){ %>
+          <li><%= err.msg %></li>
+        <% }) %>
+      </ul>
+    </div>
   <% } %>
 
-  <form method="post" action="/inv/add-inventory" novalidate>
+  <form method="post" action="/inv/add-inventory">
     <fieldset>
       <legend>Vehicle Data</legend>
 
@@ -15,28 +24,28 @@
       <%- classificationList %>  <!-- classificationList is built server-side and is the select markup -->
 
       <label for="inv_make">Make</label>
-      <input id="inv_make" name="inv_make" type="text" required value="<%= inv_make || '' %>">
+      <input id="inv_make" name="inv_make" type="text" required minlength="3" value="<%= inv_make || '' %>">
 
       <label for="inv_model">Model</label>
-      <input id="inv_model" name="inv_model" type="text" required value="<%= inv_model || '' %>">
+      <input id="inv_model" name="inv_model" type="text" required minlength="3" value="<%= inv_model || '' %>">
 
       <label for="inv_year">Year</label>
       <input id="inv_year" name="inv_year" type="number" min="1900" max="2099" required value="<%= inv_year || '' %>">
 
       <label for="inv_price">Price</label>
-      <input id="inv_price" name="inv_price" type="number" step="0.01" required value="<%= inv_price || '' %>">
+      <input id="inv_price" name="inv_price" type="number" step="0.01" min="0" required value="<%= inv_price || '' %>">
 
       <label for="inv_miles">Miles</label>
-      <input id="inv_miles" name="inv_miles" type="number" required value="<%= inv_miles || '' %>">
+      <input id="inv_miles" name="inv_miles" type="number" min="0" step="1" required value="<%= inv_miles || '' %>">
 
       <label for="inv_color">Color</label>
       <input id="inv_color" name="inv_color" type="text" required value="<%= inv_color || '' %>">
 
       <label for="inv_image">Image path</label>
-      <input id="inv_image" name="inv_image" type="text" required value="<%= inv_image || '/img/no-image-available.png' %>">
+      <input id="inv_image" name="inv_image" type="text" required value="<%= inv_image || '/images/vehicles/no-image.png' %>">
 
       <label for="inv_thumbnail">Thumbnail path</label>
-      <input id="inv_thumbnail" name="inv_thumbnail" type="text" required value="<%= inv_thumbnail || '/img/no-image-available-tn.png' %>">
+      <input id="inv_thumbnail" name="inv_thumbnail" type="text" required value="<%= inv_thumbnail || '/images/vehicles/no-image-tn.png' %>">
 
       <label for="inv_description">Description</label>
       <textarea id="inv_description" name="inv_description" required><%= inv_description || '' %></textarea>
@@ -45,6 +54,3 @@
     </fieldset>
   </form>
 </main>
-
-
-
