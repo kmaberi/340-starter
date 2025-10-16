@@ -13,7 +13,7 @@
       <h2>Reviews</h2>
       <div class="review-actions">
         <% if (locals.accountData) { %>
-          <a href="/review/add/<%= vehicle.inv_id %>" class="btn">Write a Review</a>
+          <a href="/reviews/add/<%= vehicle.inv_id %>" class="btn">Write a Review</a>
         <% } else { %>
           <div class="login-prompt">
             <a href="/account/login">Login</a> to write a review
@@ -51,7 +51,7 @@
           <h3>No Reviews Yet</h3>
           <p>Be the first to review this vehicle!</p>
           <% if (locals.accountData) { %>
-            <a href="/review/add/<%= vehicle.inv_id %>" class="btn">Write the First Review</a>
+            <a href="/reviews/add/<%= vehicle.inv_id %>" class="btn">Write the First Review</a>
           <% } %>
         </div>
       <% } %>

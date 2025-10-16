@@ -179,10 +179,15 @@ function checkUpdateData(req, res, next) {
 
 function updatePasswordRules() {
   return (req, res, next) => {
-    const { account_password } = req.body;
+    const { current_password, account_password } = req.body;
     const errors = [];
     
-    // Validate password requirements
+    // Validate current password is provided
+    if (!current_password || current_password.trim().length === 0) {
+      errors.push({ msg: 'Current password is required.' });
+    }
+    
+    // Validate new password requirements
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s]).{12,}$/;
     if (!account_password || !passwordRegex.test(account_password)) {
       errors.push({ 

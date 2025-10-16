@@ -1,14 +1,21 @@
 <header>
   <nav>
-    <!-- Other nav links -->
-    
-    <% if (locals.loggedin) { %>
-      <a href="/account/" title="Account Management">
-        Welcome <%= locals.accountData.account_firstname %>
-      </a>
-      <a href="/account/logout" title="Logout">Logout</a>
-    <% } else { %>
-      <a href="/account/login" title="My Account">My Account</a>
-    <% } %>
+    <div class="nav-container">
+      <div class="nav-left">
+        <a href="/" title="CSE Motors Home">CSE Motors</a>
+        <%- nav || '' %>
+      </div>
+      
+      <div class="nav-right">
+        <% if (locals.loggedin && locals.accountData) { %>
+          <a href="/account/" title="Account Management" class="welcome-link">
+            Welcome <%= locals.accountData.account_firstname %>
+          </a>
+          <a href="/account/logout" title="Logout" class="logout-link">Logout</a>
+        <% } else { %>
+          <a href="/account/login" title="My Account" class="login-link">My Account</a>
+        <% } %>
+      </div>
+    </div>
   </nav>
 </header>

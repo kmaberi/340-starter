@@ -1,21 +1,20 @@
-<!-- filepath: /home/kasule/Documents/Spring Semester 2025/CSE 340 Web Backend Development/CSE-340-starter/views/reviews/add-review.ejs -->
-<% if (title) { %>
-  <h1><%= title %></h1>
-<% } else { 
-  res.redirect('/')
-} %>
+<% layout('layouts/layout') %>
 
-<% if (flash.notice) { %>
-  <p class="notice"><%= flash.notice %></p>
+<% if (errors && errors.length > 0) { %>
+  <div class="errors">
+    <% errors.forEach(error => { %>
+      <p class="error"><%= error.msg %></p>
+    <% }); %>
+  </div>
 <% } %>
 
-<% if (errors) { %>
-  <ul class="notice">
-    <% errors.array().forEach(error => { %>
-      <li><%= error.msg %></li>
-    <% }) %>
-  </ul>
+<% if (message) { %>
+  <div class="message">
+    <%= message %>
+  </div>
 <% } %>
+
+<h1><%= title %></h1>
 
 <div class="review-form-container">
   <h2>Share Your Experience</h2>
@@ -25,7 +24,7 @@
     <p><%= vehicle.inv_year %> • <%= vehicle.inv_color %></p>
   </div>
 
-  <form action="/review/add" method="post" class="review-form">
+  <form action="/reviews/add" method="post" class="review-form" id="reviewForm">
     <input type="hidden" name="inv_id" value="<%= vehicle.inv_id %>">
     
     <label for="review_title">Review Title:</label>
@@ -44,10 +43,10 @@
     </select>
     
     <label for="review_text">Your Review:</label>
-    <textarea id="review_text" name="review_text" rows="6" maxlength="1000" required
+    <textarea id="review_text" name="review_text" rows="6" maxlength="2000" required
               placeholder="Tell others about your experience with this vehicle..."><%= locals.review_text ? review_text : '' %></textarea>
     <div class="char-count">
-      <span id="charCount">0</span>/1000 characters
+      <span id="charCount">0</span>/2000 characters
     </div>
     
     <div class="form-buttons">
@@ -58,16 +57,74 @@
 </div>
 
 <script>
-  // Character counter for review text
+// Client-side validation and character counter
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.getElementById('reviewForm');
   const textarea = document.getElementById('review_text');
   const charCount = document.getElementById('charCount');
+  const titleInput = document.getElementById('review_title');
+  const ratingSelect = document.getElementById('review_rating');
   
+  // Character counter for review text
   function updateCharCount() {
-    charCount.textContent = textarea.value.length;
+    const length = textarea.value.length;
+    charCount.textContent = length;
+    
+    // Visual feedback for character limit
+    if (length > 1800) {
+      charCount.style.color = '#d73527';
+    } else if (length > 1500) {
+      charCount.style.color = '#f39c12';
+    } else {
+      charCount.style.color = '#666';
+    }
   }
   
   textarea.addEventListener('input', updateCharCount);
   updateCharCount(); // Initialize count
+  
+  // Form validation
+  form.addEventListener('submit', function(e) {
+    const title = titleInput.value.trim();
+    const text = textarea.value.trim();
+    const rating = ratingSelect.value;
+    
+    let isValid = true;
+    let errorMessage = '';
+    
+    // Validate title
+    if (title.length < 5) {
+      errorMessage += 'Review title must be at least 5 characters long.\n';
+      isValid = false;
+    }
+    if (title.length > 100) {
+      errorMessage += 'Review title must be no more than 100 characters.\n';
+      isValid = false;
+    }
+    
+    // Validate text
+    if (text.length < 10) {
+      errorMessage += 'Review text must be at least 10 characters long.\n';
+      isValid = false;
+    }
+    if (text.length > 2000) {
+      errorMessage += 'Review text must be no more than 2000 characters.\n';
+      isValid = false;
+    }
+    
+    // Validate rating
+    if (!rating || rating < 1 || rating > 5) {
+      errorMessage += 'Please select a rating between 1 and 5 stars.\n';
+      isValid = false;
+    }
+    
+    if (!isValid) {
+      alert(errorMessage.trim());
+      e.preventDefault();
+      return false;
+    }
+  });
+});
 </script>
 
 <style>

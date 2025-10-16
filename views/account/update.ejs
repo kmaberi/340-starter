@@ -41,6 +41,9 @@
     
     <p class="password-info">Password requirements: At least 12 characters with at least 1 capital letter, 1 number and 1 special character.</p>
     
+    <label for="current_password">Current Password</label>
+    <input type="password" name="current_password" id="current_password" required>
+    
     <label for="account_password">New Password</label>
     <input type="password" name="account_password" id="account_password" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s]).{12,}$" title="Password must contain at least 1 capital letter, 1 lowercase letter, 1 number, 1 special character and be at least 12 characters long" required>
     
@@ -76,8 +79,15 @@ document.addEventListener('DOMContentLoaded', function() {
   });
   
   passwordForm.addEventListener('submit', function(e) {
+    const currentPassword = document.getElementById('current_password').value;
     const password = document.getElementById('account_password').value;
     const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s]).{12,}$/;
+    
+    if (!currentPassword) {
+      alert('Current password is required.');
+      e.preventDefault();
+      return;
+    }
     
     if (!passwordPattern.test(password)) {
       alert('Password must contain at least 1 capital letter, 1 lowercase letter, 1 number, 1 special character and be at least 12 characters long.');

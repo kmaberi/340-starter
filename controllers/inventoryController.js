@@ -16,10 +16,24 @@ exports.buildDetailView = async (req, res, next) => {
     }
 
     const vehicleDetailHTML = await utilities.renderVehicleDetailHTML(vehicle);
+    
+    // Get reviews for this vehicle
+    let reviews = [];
+    let reviewStats = { total_reviews: 0, avg_rating: 0 };
+    try {
+      const reviewController = require('./review-controller');
+      reviews = await reviewController.getReviewsByVehicleId(inv_id);
+      reviewStats = await reviewController.getVehicleReviewStats(inv_id);
+    } catch (reviewErr) {
+      console.warn('Could not load reviews:', reviewErr.message);
+    }
+    
     res.render('inventory/detail', {
       title: `${vehicle.inv_make} ${vehicle.inv_model} Details`,
       vehicle,
       vehicleDetailHTML,
+      reviews,
+      reviewStats,
       nav: await utilities.getNav(),
     });
   } catch (err) {

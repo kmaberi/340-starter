@@ -1,0 +1,41 @@
+<% layout('layouts/layout') %>
+
+<% if (errors && errors.length > 0) { %>
+  <div class="errors">
+    <% errors.forEach(error => { %>
+      <p class="error"><%= error.msg %></p>
+    <% }); %>
+  </div>
+<% } %>
+
+<% if (message) { %>
+  <div class="message">
+    <%= message %>
+  </div>
+<% } %>
+
+<h1><%= title %></h1>
+
+<% if (account) { %>
+  <% if (account.account_type === 'Employee' || account.account_type === 'Admin') { %>
+    <h2>Welcome <%= account.account_firstname %></h2>
+  <% } else { %>
+    <!-- No h2 element for Client level users -->
+    <p>Welcome <%= account.account_firstname %></p>
+  <% } %>
+  
+  <p><a href="/account/update/<%= account.account_id %>">Update Account Information</a></p>
+  
+  <h3>Review Management</h3>
+  <p><a href="/reviews/my-reviews">My Reviews</a></p>
+  
+  <% if (account.account_type === 'Employee' || account.account_type === 'Admin') { %>
+    <h3>Inventory Management</h3>
+    <p><a href="/inv/management">Access Inventory Management</a></p>
+    
+    <h3>Review Moderation</h3>
+    <p><a href="/reviews/admin">Moderate Reviews</a></p>
+  <% } %>
+<% } else { %>
+  <p>You are not logged in. <a href="/account/login">Please log in</a></p>
+<% } %>

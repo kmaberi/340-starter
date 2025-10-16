@@ -101,7 +101,7 @@ async function buildAccountManagement(req, res, next) {
     const nav = await utilities.getNav();
     const account = res.locals.accountData || null;
     const message = (req.flash(MESSAGE_KEY) || []).length ? req.flash(MESSAGE_KEY)[0] : null;
-    res.render('account/management', { title: 'Account Management', nav, errors: null, message, account });
+    res.render('account/account-management', { title: 'Account Management', nav, errors: null, message, account });
   } catch (err) {
     next(err);
   }

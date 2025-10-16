@@ -110,6 +110,9 @@ if (inventoryRouter) app.use('/inv', inventoryRouter);
 const accountRouter = tryRequireRoute('./routes/account');
 if (accountRouter) app.use('/account', accountRouter);
 
+const reviewRouter = tryRequireRoute('./routes/review');
+if (reviewRouter) app.use('/reviews', reviewRouter);
+
 const miscRouter = tryRequireRoute('./routes/misc');
 if (miscRouter) app.use('/', miscRouter);
 
