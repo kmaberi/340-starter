@@ -20,9 +20,15 @@
       
       <label for="account_password">Password:</label>
       <div class="hint">Passwords must be at least 12 characters and contain at least 1 number, 1 capital letter and 1 special character.</div>
-      <input type="password" id="account_password" name="account_password" 
-             required placeholder="Enter your password"
-             pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{12,}$">
+      <div class="password-input-container">
+        <input type="password" id="account_password" name="account_password" 
+               required placeholder="Enter your password"
+               pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{12,}$">
+        <button type="button" class="password-toggle" onclick="togglePassword('account_password')">
+          <span class="show-text">👁️</span>
+          <span class="hide-text" style="display: none;">🙈</span>
+        </button>
+      </div>
       
       <button type="submit" class="btn-primary">Login</button>
     </fieldset>

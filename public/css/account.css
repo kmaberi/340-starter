@@ -175,3 +175,38 @@ body {
   color: #777;
   margin: 30px 0;
 }
+
+/* Password input container */
+.password-input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* Password toggle button */
+.password-toggle {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  font-size: 16px;
+  color: #666;
+  width: auto;
+  height: auto;
+  z-index: 2;
+}
+
+.password-toggle:hover {
+  color: #0078d7;
+  background: none;
+}
+
+/* Adjust password input to make room for button */
+.password-input-container input[type="password"],
+.password-input-container input[type="text"] {
+  padding-right: 40px;
+}
