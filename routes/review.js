@@ -61,4 +61,55 @@ router.post("/admin/:action/:review_id",
   utilities.handleErrors(reviewController.approveReview)
 )
 
+// Advanced review management routes
+const advancedController = require('../controllers/review-advanced-controller')
+
+// Analytics dashboard
+router.get("/analytics", 
+  utilities.checkLogin,
+  utilities.checkAccountType,
+  utilities.handleErrors(advancedController.buildAnalyticsDashboard)
+)
+
+// Advanced review management
+router.get("/advanced-management", 
+  utilities.checkLogin,
+  utilities.checkAccountType,
+  utilities.handleErrors(advancedController.buildAdvancedReviewManagement)
+)
+
+// Bulk review actions
+router.post("/bulk-action", 
+  utilities.checkLogin,
+  utilities.checkAccountType,
+  utilities.handleErrors(advancedController.processBulkReviewAction)
+)
+
+// Sentiment analysis
+router.get("/sentiment-analysis/:inv_id?", 
+  utilities.checkLogin,
+  utilities.checkAccountType,
+  utilities.handleErrors(advancedController.buildSentimentAnalysis)
+)
+
+// Comparative ratings
+router.get("/comparative/:make", 
+  utilities.checkLogin,
+  utilities.checkAccountType,
+  utilities.handleErrors(advancedController.buildComparativeRatings)
+)
+
+// Export reviews
+router.get("/export", 
+  utilities.checkLogin,
+  utilities.checkAccountType,
+  utilities.handleErrors(advancedController.exportReviewsCSV)
+)
+
+// Notification settings
+router.get("/notifications", 
+  utilities.checkLogin,
+  utilities.handleErrors(advancedController.buildNotificationSettings)
+)
+
 module.exports = router

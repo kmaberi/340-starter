@@ -113,6 +113,9 @@ if (accountRouter) app.use('/account', accountRouter);
 const reviewRouter = tryRequireRoute('./routes/review');
 if (reviewRouter) app.use('/reviews', reviewRouter);
 
+const apiReviewRouter = tryRequireRoute('./routes/api-reviews');
+if (apiReviewRouter) app.use('/api/reviews', apiReviewRouter);
+
 const miscRouter = tryRequireRoute('./routes/misc');
 if (miscRouter) app.use('/', miscRouter);
 

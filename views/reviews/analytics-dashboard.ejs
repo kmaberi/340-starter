@@ -1,0 +1,482 @@
+<% layout('layouts/layout') %>
+
+<% if (message) { %>
+  <div class="message">
+    <%= message %>
+  </div>
+<% } %>
+
+<h1><%= title %></h1>
+
+<div class="analytics-dashboard">
+  <!-- Key Metrics Cards -->
+  <div class="metrics-grid">
+    <div class="metric-card total-reviews">
+      <div class="metric-icon">📊</div>
+      <div class="metric-content">
+        <h3><%= analytics.stats?.total_reviews || 0 %></h3>
+        <p>Total Reviews</p>
+      </div>
+    </div>
+    
+    <div class="metric-card approved-reviews">
+      <div class="metric-icon">✅</div>
+      <div class="metric-content">
+        <h3><%= analytics.stats?.approved_reviews || 0 %></h3>
+        <p>Approved Reviews</p>
+      </div>
+    </div>
+    
+    <div class="metric-card pending-reviews">
+      <div class="metric-icon">⏳</div>
+      <div class="metric-content">
+        <h3><%= analytics.stats?.pending_reviews || 0 %></h3>
+        <p>Pending Reviews</p>
+      </div>
+    </div>
+    
+    <div class="metric-card avg-rating">
+      <div class="metric-icon">⭐</div>
+      <div class="metric-content">
+        <h3><%= analytics.stats?.overall_avg_rating || 0 %></h3>
+        <p>Average Rating</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts Section -->
+  <div class="charts-section">
+    <div class="chart-container">
+      <h3>Rating Distribution</h3>
+      <div class="rating-chart">
+        <% if (analytics.rating_dist && analytics.rating_dist.length > 0) { %>
+          <% analytics.rating_dist.forEach(rating => { %>
+            <div class="rating-bar">
+              <div class="rating-label">
+                <% for(let i = 0; i < rating.review_rating; i++) { %>⭐<% } %>
+                (<%= rating.count %>)
+              </div>
+              <div class="bar-container">
+                <div class="bar" style="width: <%= rating.percentage %>%"></div>
+              </div>
+              <div class="percentage"><%= rating.percentage %>%</div>
+            </div>
+          <% }); %>
+        <% } else { %>
+          <p>No rating data available</p>
+        <% } %>
+      </div>
+    </div>
+
+    <div class="chart-container">
+      <h3>Monthly Trends</h3>
+      <div class="trends-chart" id="trendsChart">
+        <% if (analytics.trends && analytics.trends.length > 0) { %>
+          <canvas id="trendsCanvas" width="400" height="200"></canvas>
+        <% } else { %>
+          <p>No trend data available</p>
+        <% } %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top Vehicles Section -->
+  <div class="top-vehicles-section">
+    <h3>Top Rated Vehicles</h3>
+    <div class="vehicles-table">
+      <% if (analytics.top_vehicles && analytics.top_vehicles.length > 0) { %>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Vehicle</th>
+              <th>Reviews</th>
+              <th>Average Rating</th>
+              <th>Rating Visual</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% analytics.top_vehicles.forEach(vehicle => { %>
+              <tr>
+                <td>
+                  <strong><%= vehicle.inv_make %> <%= vehicle.inv_model %></strong><br>
+                  <small><%= vehicle.inv_year %></small>
+                </td>
+                <td><%= vehicle.review_count %></td>
+                <td><%= vehicle.avg_rating %></td>
+                <td>
+                  <div class="rating-stars">
+                    <% for(let i = 1; i <= 5; i++) { %>
+                      <span class="star <%= i <= vehicle.avg_rating ? 'filled' : '' %>">⭐</span>
+                    <% } %>
+                  </div>
+                </td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      <% } else { %>
+        <p>No vehicle data available</p>
+      <% } %>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="quick-actions">
+    <h3>Quick Actions</h3>
+    <div class="action-buttons">
+      <a href="/reviews/advanced-management" class="btn btn-primary">
+        <span class="icon">🔧</span>
+        Advanced Management
+      </a>
+      <a href="/reviews/sentiment-analysis" class="btn btn-secondary">
+        <span class="icon">💭</span>
+        Sentiment Analysis
+      </a>
+      <a href="/reviews/export?format=csv" class="btn btn-export">
+        <span class="icon">📥</span>
+        Export Data
+      </a>
+    </div>
+  </div>
+
+  <!-- Real-time Updates -->
+  <div class="live-stats">
+    <h3>Live Statistics</h3>
+    <div id="liveStats" class="live-stats-content">
+      <p>Loading real-time data...</p>
+    </div>
+    <button id="refreshStats" class="btn btn-refresh">🔄 Refresh</button>
+  </div>
+</div>
+
+<script>
+// Analytics Dashboard JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+  // Initialize charts if data is available
+  <% if (analytics.trends && analytics.trends.length > 0) { %>
+    drawTrendsChart();
+  <% } %>
+  
+  // Setup real-time updates
+  setupLiveUpdates();
+  
+  // Setup refresh button
+  document.getElementById('refreshStats').addEventListener('click', refreshStats);
+});
+
+<% if (analytics.trends && analytics.trends.length > 0) { %>
+function drawTrendsChart() {
+  const canvas = document.getElementById('trendsCanvas');
+  const ctx = canvas.getContext('2d');
+  const trends = <%- JSON.stringify(analytics.trends) %>;
+  
+  // Simple line chart implementation
+  const padding = 40;
+  const width = canvas.width - 2 * padding;
+  const height = canvas.height - 2 * padding;
+  
+  const maxCount = Math.max(...trends.map(t => t.review_count));
+  const maxRating = 5;
+  
+  // Clear canvas
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+  // Draw axes
+  ctx.beginPath();
+  ctx.moveTo(padding, padding);
+  ctx.lineTo(padding, height + padding);
+  ctx.lineTo(width + padding, height + padding);
+  ctx.stroke();
+  
+  // Draw review count line
+  ctx.beginPath();
+  ctx.strokeStyle = '#007bff';
+  ctx.lineWidth = 2;
+  
+  trends.forEach((trend, index) => {
+    const x = padding + (index / (trends.length - 1)) * width;
+    const y = height + padding - (trend.review_count / maxCount) * height;
+    
+    if (index === 0) {
+      ctx.moveTo(x, y);
+    } else {
+      ctx.lineTo(x, y);
+    }
+  });
+  ctx.stroke();
+  
+  // Draw points
+  trends.forEach((trend, index) => {
+    const x = padding + (index / (trends.length - 1)) * width;
+    const y = height + padding - (trend.review_count / maxCount) * height;
+    
+    ctx.beginPath();
+    ctx.arc(x, y, 4, 0, 2 * Math.PI);
+    ctx.fillStyle = '#007bff';
+    ctx.fill();
+  });
+}
+<% } %>
+
+function setupLiveUpdates() {
+  // Initial load
+  refreshStats();
+  
+  // Auto-refresh every 30 seconds
+  setInterval(refreshStats, 30000);
+}
+
+async function refreshStats() {
+  try {
+    const response = await fetch('/api/reviews/stats');
+    const data = await response.json();
+    
+    if (data.success) {
+      const liveStatsEl = document.getElementById('liveStats');
+      liveStatsEl.innerHTML = `
+        <div class="live-metric">
+          <strong>Active Users:</strong> ${data.data.unique_reviewers || 0}
+        </div>
+        <div class="live-metric">
+          <strong>Vehicles with Reviews:</strong> ${data.data.vehicles_with_reviews || 0}
+        </div>
+        <div class="live-metric">
+          <strong>Last Updated:</strong> ${new Date().toLocaleTimeString()}
+        </div>
+      `;
+    }
+  } catch (error) {
+    console.error('Failed to refresh stats:', error);
+  }
+}
+
+// Auto-highlight metric cards based on values
+document.querySelectorAll('.metric-card').forEach(card => {
+  const value = parseInt(card.querySelector('h3').textContent);
+  if (value > 100) {
+    card.classList.add('high-value');
+  } else if (value > 50) {
+    card.classList.add('medium-value');
+  }
+});
+</script>
+
+<style>
+.analytics-dashboard {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.metric-card {
+  display: flex;
+  align-items: center;
+  padding: 1.5rem;
+  background: var(--bg);
+  border-radius: 12px;
+  border-left: 4px solid var(--accent);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.metric-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.metric-card.high-value {
+  border-left-color: #28a745;
+}
+
+.metric-card.medium-value {
+  border-left-color: #ffc107;
+}
+
+.metric-icon {
+  font-size: 2.5rem;
+  margin-right: 1rem;
+}
+
+.metric-content h3 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--heading);
+  margin: 0;
+}
+
+.metric-content p {
+  color: var(--muted);
+  margin: 0.5rem 0 0 0;
+  font-size: 0.9rem;
+}
+
+.charts-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.chart-container {
+  padding: 1.5rem;
+  background: var(--bg);
+  border-radius: 12px;
+}
+
+.rating-chart {
+  margin-top: 1rem;
+}
+
+.rating-bar {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+
+.rating-label {
+  min-width: 120px;
+  font-size: 0.9rem;
+}
+
+.bar-container {
+  flex: 1;
+  height: 20px;
+  background: #e9ecef;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.bar {
+  height: 100%;
+  background: linear-gradient(90deg, #ffc107, #ff6b35);
+  border-radius: 10px;
+  transition: width 0.5s ease;
+}
+
+.percentage {
+  min-width: 50px;
+  text-align: right;
+  font-weight: 600;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.data-table th,
+.data-table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.data-table th {
+  background: var(--bg);
+  font-weight: 600;
+  color: var(--heading);
+}
+
+.rating-stars {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.star {
+  color: #ddd;
+  font-size: 1.2rem;
+}
+
+.star.filled {
+  color: #ffc107;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: var(--accent-700);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: #6c757d;
+  color: white;
+}
+
+.btn-export {
+  background: #28a745;
+  color: white;
+}
+
+.btn-refresh {
+  background: #17a2b8;
+  color: white;
+  margin-top: 1rem;
+}
+
+.live-stats {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: var(--bg);
+  border-radius: 12px;
+}
+
+.live-stats-content {
+  margin: 1rem 0;
+}
+
+.live-metric {
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+  background: var(--card);
+  border-radius: 6px;
+}
+
+@media (max-width: 768px) {
+  .charts-section {
+    grid-template-columns: 1fr;
+  }
+  
+  .metrics-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+  }
+}
+</style>

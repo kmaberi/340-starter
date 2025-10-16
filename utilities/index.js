@@ -205,7 +205,8 @@ function checkAccountType(req, res, next) {
 /* site metadata */
 const siteMeta = {
   siteName: 'CSE Motors',
-  author: 'kmaberi',
+  author: 'Kenneth Maberi',
+  authorEmail: 'kennethmaberi@gmail.com',
   createdAt: new Date().toISOString(),
 };
 

@@ -27,14 +27,24 @@
   <p><a href="/account/update/<%= account.account_id %>">Update Account Information</a></p>
   
   <h3>Review Management</h3>
-  <p><a href="/reviews/my-reviews">My Reviews</a></p>
+  <div class="account-section-content">
+    <p><a href="/reviews/my-reviews" class="account-link">📝 My Reviews</a></p>
+    <p><a href="/reviews/notifications" class="account-link">🔔 Notification Settings</a></p>
+  </div>
   
   <% if (account.account_type === 'Employee' || account.account_type === 'Admin') { %>
     <h3>Inventory Management</h3>
-    <p><a href="/inv/management">Access Inventory Management</a></p>
+    <div class="account-section-content">
+      <p><a href="/inv/management" class="account-link">🏪 Access Inventory Management</a></p>
+    </div>
     
     <h3>Review Moderation</h3>
-    <p><a href="/reviews/admin">Moderate Reviews</a></p>
+    <div class="account-section-content">
+      <p><a href="/reviews/admin" class="account-link">⚖️ Basic Moderation</a></p>
+      <p><a href="/reviews/advanced-management" class="account-link">🔧 Advanced Management</a></p>
+      <p><a href="/reviews/analytics" class="account-link">📊 Analytics Dashboard</a></p>
+      <p><a href="/reviews/sentiment-analysis" class="account-link">💭 Sentiment Analysis</a></p>
+    </div>
   <% } %>
 <% } else { %>
   <p>You are not logged in. <a href="/account/login">Please log in</a></p>
