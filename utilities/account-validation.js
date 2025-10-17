@@ -110,7 +110,7 @@ async function checkRegData(req, res, next) {
 
 function loginRules() {
   return [
-    body('account_email').trim().escape().notEmpty().isEmail().withMessage('Enter a valid email.'),
+    body('account_email').trim().notEmpty().isEmail().normalizeEmail().withMessage('Enter a valid email.'),
     body('account_password')
       .trim()
       .notEmpty()
