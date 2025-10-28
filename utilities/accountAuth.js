@@ -6,7 +6,7 @@ const jwtSecret = process.env.JWT_SECRET || 'change_this_secret';
 // middleware to populate res.locals.accountData if token present & valid
 function checkJwtCookie(req, res, next) {
   try {
-    const token = req.cookies?.token; // adjust cookie name if different
+    const token = req.cookies?.jwt; // adjust cookie name if different
     if (!token) {
       res.locals.accountData = null;
       return next();
@@ -26,7 +26,7 @@ function checkJwtCookie(req, res, next) {
 // middleware to restrict to Employee or Admin
 function onlyAllowEmployeesAndAdmins(req, res, next) {
   try {
-    const token = req.cookies?.token;
+    const token = req.cookies?.jwt;
     if (!token) {
       req.flash('error', 'You must be logged in to access that page.');
       return res.status(401).render('account/login', { title: 'Login', message: 'Please login to continue' });
